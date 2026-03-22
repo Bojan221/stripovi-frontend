@@ -32,7 +32,7 @@ function Popup({
 
   return (
     <div className="fixed top-0 left-0 h-screen w-full overflow-hidden bg-[#00000060] z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-xl">
         {/* Header */}
         <div className="flex justify-between items-center bg-green-500 rounded-t-lg px-6 py-4">
           <h1 className="text-2xl font-bold text-white">{title}</h1>

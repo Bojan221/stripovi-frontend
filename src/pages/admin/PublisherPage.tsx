@@ -10,7 +10,9 @@ function PublisherPage() {
   const [showCreatePopup, setShowCreatePopup] = useState(false);
   const [publishers, setPublishers] = useState<Publisher[] | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const [updatePublisher, setUpdatePublisher] = useState<Publisher | null>(
+    null,
+  );
   const fetchPublishers = async () => {
     try {
       const res = await axiosPrivate.get("/api/publishers/getAllPublishers");
@@ -119,7 +121,13 @@ function PublisherPage() {
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-700 text-right">
                         <div className="flex gap-2 items-center justify-end">
-                          <button className="cursor-pointer">
+                          <button
+                            className="cursor-pointer"
+                            onClick={() => {
+                              setShowCreatePopup(true);
+                              setUpdatePublisher(publisher);
+                            }}
+                          >
                             <FaEdit size={16} color="orange" />
                           </button>
                           <button
@@ -211,8 +219,15 @@ function PublisherPage() {
 
       {showCreatePopup && (
         <CreatePublisherPopup
-          onClose={() => setShowCreatePopup(false)}
+          onClose={() => {
+            setShowCreatePopup(false);
+            setUpdatePublisher(null);
+          }}
           fetch={() => fetchPublishers()}
+          {...(updatePublisher && {
+            updateData: updatePublisher,
+            update: true,
+          })}
         />
       )}
     </div>

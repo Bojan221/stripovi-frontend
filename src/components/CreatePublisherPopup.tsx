@@ -2,15 +2,26 @@ import { useState } from "react";
 import { axiosPrivate } from "../api/axiosInstance";
 import { showToast } from "../utils/toast";
 import Popup from "./core/Popup";
+import type { Publisher } from "../types/Publisher";
 interface PopupProps {
   onClose: () => void;
   fetch: () => void;
+  update?: boolean;
+  updateData?: Publisher;
 }
-function CreatePublisherPopup({ onClose, fetch }: PopupProps) {
-  const [name, setName] = useState("");
-  const [country, setCountry] = useState("");
+function CreatePublisherPopup({
+  onClose,
+  fetch,
+  update = false,
+  updateData,
+}: PopupProps) {
+  const [name, setName] = useState(updateData?.name || "");
+  const [country, setCountry] = useState(updateData?.country || "");
   const createPublisher = async () => {
     try {
+      const endpoint = update
+        ? `/api/publishers/updatePublisher/${updateData?._id}`
+        : "/api/publishers/createPublisher";
       if (!name) {
         showToast("error", "Ime izdavača je obavezno!");
         return;
@@ -23,16 +34,19 @@ function CreatePublisherPopup({ onClose, fetch }: PopupProps) {
         name,
         country,
       };
-      const response = await axiosPrivate.post(
-        "/api/publishers/createPublisher",
-        publisher,
-      );
+      const response = await axiosPrivate.post(endpoint, publisher);
       if (response.status === 200) {
         fetch();
         onClose();
-        return showToast("success", "Uspješno kreiran izdavač");
+        const message = update
+          ? "Uspješno ažuriran izdavač"
+          : "Uspješno kreiran izdavač";
+        return showToast("success", message);
       } else {
-        return showToast("error", "Greška pri kreiranju izdavača");
+        const message = update
+          ? "Greška pri ažuriranju izdavača"
+          : "Greška pri kreiranju izdavača";
+        return showToast("error", message);
       }
     } catch (err: any) {
       showToast("error", err.response.data.message);
@@ -41,10 +55,10 @@ function CreatePublisherPopup({ onClose, fetch }: PopupProps) {
 
   return (
     <Popup
-      title="Kreiraj Izdavača"
+      title={update ? "Ažuriraj Izdavača" : "Kreiraj Izdavača"}
       onClose={onClose}
       onConfirm={createPublisher}
-      buttonText="Kreiraj"
+      buttonText={update ? "Ažuriraj" : "Kreiraj"}
     >
       <div className="px-6 py-6 space-y-5">
         <div>
@@ -65,7 +79,7 @@ function CreatePublisherPopup({ onClose, fetch }: PopupProps) {
             Država
           </label>
           <input
-            type="email"
+            type="text"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
