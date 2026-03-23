@@ -10,4 +10,7 @@ export interface User {
   lastName: string;
   email: string;
   role: "user" | "moderator" | "admin";
+  createdAt: string;
+  updatedAt: string;
+  profilePicture?: string;
 }

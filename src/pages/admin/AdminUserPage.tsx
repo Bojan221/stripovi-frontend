@@ -9,6 +9,9 @@ import UpdateUserPopup from "../../components/UpdateUserPopup";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import { AiOutlineStop } from "react-icons/ai";
+import Avatar from "../../components/core/Avatar";
+import { IoIosWarning } from "react-icons/io";
+
 
 function AdminUserPage() {
   const [allUsers, setAllUsers] = useState<User[] | null>(null);
@@ -27,8 +30,7 @@ function AdminUserPage() {
       setError(
         err.response?.data?.message || "Greška pri učitavanju korisnika",
       );
-      showToast("error", err.response.data.message);
-      console.log(err);
+      showToast("error", err.response?.data?.message || "Greška pri učitavanju korisnika");
     } finally {
       setLoading(false);
     }
@@ -68,9 +70,8 @@ function AdminUserPage() {
         showToast("success", "Korisnik je uspjesno obrisan");
       }
       fetchData();
-    } catch (err) {
-      console.log(err);
-      showToast("error", "Greška pri brisanju korisnika");
+    } catch (err: any) {
+      showToast("error", err.response?.data?.message || "Greška pri brisanju korisnika");
     }
   };
 
@@ -118,7 +119,7 @@ function AdminUserPage() {
       <div className="max-w-7xl mx-auto">
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <p className="text-red-800 font-semibold">⚠️ {error}</p>
+            <p className="text-red-800 font-semibold flex items-center gap-2"><IoIosWarning className="w-7 h-7" color="orange" /> {error}</p>
           </div>
         )}
 
@@ -153,10 +154,7 @@ function AdminUserPage() {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-blue-400 flex items-center justify-center text-white font-bold">
-                            {user.firstName[0]}
-                            {user.lastName[0]}
-                          </div>
+                         <Avatar firstName={user.firstName} lastName={user.lastName} size="medium" />
                           <span className="font-medium text-gray-900">
                             {user.firstName} {user.lastName}
                           </span>

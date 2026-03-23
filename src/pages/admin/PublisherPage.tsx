@@ -6,6 +6,7 @@ import type { Publisher } from "../../types/Publisher";
 import LoadingIndicator from "../../components/core/LoadingComponent";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { format } from "date-fns";
+import Avatar from "../../components/core/Avatar";
 function PublisherPage() {
   const [showCreatePopup, setShowCreatePopup] = useState(false);
   const [publishers, setPublishers] = useState<Publisher[] | null>(null);
@@ -102,16 +103,15 @@ function PublisherPage() {
                         {publisher.country}
                       </td>
                       <td className="px-6 py-4 text-sm text-center text-gray-700">
-                        <div className="flex items-center justify-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-blue-400 flex items-center justify-center text-white font-bold">
-                            {publisher.createdBy.firstName[0]}
-                            {publisher.createdBy.lastName[0]}
-                          </div>
+                        {publisher.createdBy ? (
+                          <div className="flex items-center justify-center gap-3">
+                          <Avatar firstName={publisher.createdBy?.firstName || ""} lastName={publisher.createdBy?.lastName || ""} size="medium" />
                           <span className="font-medium text-gray-900">
-                            {publisher.createdBy.firstName}{" "}
-                            {publisher.createdBy.lastName}
+                            {publisher.createdBy?.firstName}{" "}
+                            {publisher.createdBy?.lastName}
                           </span>
                         </div>
+                        ):(<span className="text-gray-500">Nepoznat korisnik</span>)}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-700 text-center">
                         {format(
@@ -169,13 +169,10 @@ function PublisherPage() {
                           Kreirao
                         </p>
                         <div className="flex items-center gap-2 mt-1">
-                          <div className="w-8 h-8 rounded-full bg-blue-400 flex items-center justify-center text-white font-bold text-xs">
-                            {publisher.createdBy.firstName[0]}
-                            {publisher.createdBy.lastName[0]}
-                          </div>
+                          <Avatar firstName={publisher.createdBy?.firstName || ""} lastName={publisher.createdBy?.lastName || ""} size="medium" />
                           <p className="text-sm text-gray-900 font-medium">
-                            {publisher.createdBy.firstName}{" "}
-                            {publisher.createdBy.lastName}
+                            {publisher.createdBy?.firstName}{" "}
+                            {publisher.createdBy?.lastName}
                           </p>
                         </div>
                       </div>

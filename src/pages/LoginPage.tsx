@@ -110,6 +110,7 @@ function LoginPage() {
               name="password"
               id="password"
               value={loginData.password}
+              onKeyDown={(e) => e.key === "Enter" && handleLogin()}
               onChange={(e) =>
                 setLoginData({ ...loginData, [e.target.name]: e.target.value })
               }

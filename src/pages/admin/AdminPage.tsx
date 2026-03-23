@@ -7,7 +7,6 @@ import {
   MdPerson,
   MdAutoStories,
 } from "react-icons/md";
-
 function AdminPage() {
   const tabs = [
     { id: "users", label: "Korisnici", path: "users", icon: MdPeople },
@@ -29,6 +28,7 @@ function AdminPage() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900">
+        
       {/* Header Section */}
       <div className="bg-linear-to-r from-blue-600 to-blue-700 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

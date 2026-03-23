@@ -16,6 +16,7 @@ import EditionsPage from "./pages/admin/EditionsPage.tsx";
 import CharactersPage from "./pages/admin/CharactersPage.tsx";
 import ComicsPage from "./pages/admin/ComicsPage.tsx";
 import ProtectedRoute from "./routes/ProtectedRoute.tsx";
+import AdminRoute from "./routes/AdminRoute.tsx";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
 import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
         <App />
       </ProtectedRoute>
     ),
+    errorElement: <div>Greška pri učitavanju stranice</div>,
     children: [
       {
         path: "/",
@@ -52,7 +54,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        element: <AdminPage />,
+        element: (
+          <AdminRoute>
+            <AdminPage />
+          </AdminRoute>
+        ),
         children: [
           {
             index: true,

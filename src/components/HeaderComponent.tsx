@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "../store/store";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { axiosPrivate } from "../api/axiosInstance";
 import { useDispatch } from "react-redux";
@@ -14,7 +14,7 @@ function HeaderComponent() {
   const dispatch = useDispatch();
   const [showOptions, setShowOptions] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-
+  const navigator = useNavigate();
   const handleLogout = async () => {
     try {
       await axiosPrivate.post(
@@ -144,7 +144,7 @@ function HeaderComponent() {
             </div>
             {showOptions && (
               <div className="absolute right-0 mt-2 shadow-lg w-44 rounded-md bg-white flex flex-col z-50">
-                <button className="text-md font-semibold hover:bg-slate-200 transition-all duration-200 px-4 py-2 text-left">
+                <button className="text-md font-semibold hover:bg-slate-200 transition-all duration-200 px-4 py-2 text-left" onClick={()=> {navigator("/my-account");setShowOptions(false)}}>
                   Moj Profil
                 </button>
                 <button
@@ -181,7 +181,7 @@ function HeaderComponent() {
         }`}
       >
         {/* User Info Section at Top */}
-        <div className="bg-blue-400 px-5 py-6 flex items-center gap-4 relative">
+        <div className="bg-blue-400 px-5 py-6 flex items-center gap-4 relative" onClick={()=> navigator("/my-account")}>
           <div className="w-12 h-12 flex items-center justify-center bg-white text-blue-600 font-bold text-lg rounded-full shadow-md">
             {user ? `${user.firstName[0]}${user.lastName[0]}` : "?"}
           </div>
