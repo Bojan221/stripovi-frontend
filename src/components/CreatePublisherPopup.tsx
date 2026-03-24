@@ -28,28 +28,22 @@ function CreatePublisherPopup({
       }
       if (!country) {
         showToast("error", "Država je obavezna!");
+        return;
       }
-
       const publisher = {
         name,
         country,
       };
-      const response = await axiosPrivate.post(endpoint, publisher);
-      if (response.status === 200) {
+      await axiosPrivate.post(endpoint, publisher);
         fetch();
         onClose();
         const message = update
           ? "Uspješno ažuriran izdavač"
           : "Uspješno kreiran izdavač";
         return showToast("success", message);
-      } else {
-        const message = update
-          ? "Greška pri ažuriranju izdavača"
-          : "Greška pri kreiranju izdavača";
-        return showToast("error", message);
-      }
+      
     } catch (err: any) {
-      showToast("error", err.response.data.message);
+      showToast("error", err.response?.data?.message || "Greška pri kreiranju ili ažuriranju izdavača");
     }
   };
 

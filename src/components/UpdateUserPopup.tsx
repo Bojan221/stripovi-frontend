@@ -66,7 +66,6 @@ function UpdateUserPopup({ onClose, userId, fetch }: PopupProps) {
 
       fetch();
     } catch (err: any) {
-      console.error("Greška pri ažuriranju korisnika", err);
       showToast(
         "error",
         err.response?.data?.message || "Greška pri ažuriranju",

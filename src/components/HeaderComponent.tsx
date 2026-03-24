@@ -8,6 +8,7 @@ import { logoutUser } from "../store/userSlice";
 import { showToast } from "../utils/toast";
 import { HiBars3, HiXMark } from "react-icons/hi2";
 import { IoClose } from "react-icons/io5";
+import Avatar from "./core/Avatar";
 
 function HeaderComponent() {
   const { user } = useSelector((state: RootState) => state.user);
@@ -134,14 +135,12 @@ function HeaderComponent() {
 
         {/* User Profile & Hamburger */}
         <div className="flex items-center gap-4 ml-auto md:ml-0">
-          {/* User Avatar - Hidden on Mobile */}
+          {/* User Avatar */}
           <div className="relative hidden md:block">
-            <div
-              className="w-12 h-12 flex items-center justify-center bg-white text-blue-600 font-bold text-lg rounded-full shadow-md"
-              onClick={() => setShowOptions(!showOptions)}
-            >
-              {user ? `${user.firstName[0]}${user.lastName[0]}` : "?"}
+            <div onClick={() => setShowOptions(!showOptions)} className="cursor-pointer">
+              <Avatar firstName={user?.firstName || ""} lastName={user?.lastName || ""} profilePicture={user?.profilePicture || ""} size="medium"/>
             </div>
+            
             {showOptions && (
               <div className="absolute right-0 mt-2 shadow-lg w-44 rounded-md bg-white flex flex-col z-50">
                 <button className="text-md font-semibold hover:bg-slate-200 transition-all duration-200 px-4 py-2 text-left" onClick={()=> {navigator("/my-account");setShowOptions(false)}}>
@@ -182,9 +181,7 @@ function HeaderComponent() {
       >
         {/* User Info Section at Top */}
         <div className="bg-blue-400 px-5 py-6 flex items-center gap-4 relative" onClick={()=> navigator("/my-account")}>
-          <div className="w-12 h-12 flex items-center justify-center bg-white text-blue-600 font-bold text-lg rounded-full shadow-md">
-            {user ? `${user.firstName[0]}${user.lastName[0]}` : "?"}
-          </div>
+          <Avatar firstName={user?.firstName || ""} lastName={user?.lastName || ""} profilePicture={user?.profilePicture || ""} size="medium" className="bg-white! text-blue-400!"/>
           <div className="text-white">
             <p className="font-bold">
               {user ? `${user.firstName} ${user.lastName}` : "Korisnik"}

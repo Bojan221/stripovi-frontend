@@ -1,6 +1,7 @@
 import {useState, useEffect} from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../store/store";
+import { updateUser, updateUserNames } from "../store/userSlice";
 import Avatar from "../components/core/Avatar";
 import {format} from "date-fns"; 
 import LoadingIndicator from "../components/core/LoadingComponent";
@@ -10,14 +11,16 @@ import { IoIosWarning } from "react-icons/io";
 
 function MyAccountPage() {
   const user = useSelector((state: RootState) => state.user.user);
+  const dispatch = useDispatch();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [profilePictureFile, setProfilePictureFile] = useState<File | null>(null);
   const [profilePicturePreview, setProfilePicturePreview] = useState<string | null>(null);
   const [settingPicture, setSettingPicture] = useState(false);
+  const [name,setName]= useState(user?.firstName || "");
+  const [lastName,setLastName]= useState(user?.lastName || "");
   
-
   useEffect(() => {
     return () => {
       if (profilePicturePreview) {
@@ -33,17 +36,61 @@ function MyAccountPage() {
       formData.append("profilePicture", profilePictureFile);
     }
     try {
-      const response = await axiosPrivate.put("/api/users/changeProfilePicture", formData, {
+      const response  = await axiosPrivate.put("/api/users/changeProfilePicture", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
-      console.log(response)
-      setSettingPicture(false); 
+      
+      if(response.status === 200) {
+        setSettingPicture(false);
+        setProfilePictureFile(null);
+        
+        if (profilePicturePreview) {
+          URL.revokeObjectURL(profilePicturePreview);
+        }
+        setProfilePicturePreview(null);
+        
+        const newProfilePicture = response.data?.profilePicture || response.data?.user?.profilePicture;
+        if (newProfilePicture) {
+          dispatch(updateUser({ ...user, profilePicture: newProfilePicture } as any));
+        }
+        
+        showToast("success", "Profilna slika uspješno ažurirana");
+        
+        return
+      } else {
+        setSettingPicture(false);
+        showToast("error", "Došlo je do greške prilikom ažuriranja profilne slike");
+      }
 
     }catch(err:any) { 
       showToast("error", err.response?.data?.message || "Greska pri postavljanju profilne slike");
       setSettingPicture(false);
+    }
+  }
+
+  const changeFirstAndLastName = async () => {
+    try {
+      if(!name.trim() || !lastName.trim()) {
+        return showToast("error", "Ime i prezime ne smiju biti prazni");
+      }
+      if(name.trim() === user?.firstName || lastName.trim() === user?.lastName) {
+        return showToast("info", "Niste napravili nikakve promjene");
+      }
+
+      const data = { 
+        firstName: name.trim(),
+        lastName: lastName.trim(),
+      }
+
+      await axiosPrivate.put("/api/users/updateUserNames", data);
+      dispatch(updateUserNames(data));
+      setIsEditingProfile(false)
+      showToast("success", "Ime i prezime uspješno ažurirana");
+
+    } catch (err:any) {
+      showToast("error", err.response?.data?.message || "Greška pri validaciji imena i prezimena");
     }
   }
 
@@ -197,7 +244,8 @@ function MyAccountPage() {
                 </label>
                 <input
                   type="text"
-                  defaultValue={user?.firstName}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   placeholder="Unesite ime"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -208,13 +256,14 @@ function MyAccountPage() {
                 </label>
                 <input
                   type="text"
-                  defaultValue={user?.lastName}
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                   placeholder="Unesite prezime"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               <div className="pt-4 flex gap-3">
-                <button className="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-3 rounded-lg transition-colors">
+                <button className="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-3 rounded-lg transition-colors" onClick={()=> changeFirstAndLastName()}>
                   Sačuvaj Promene
                 </button>
               </div>

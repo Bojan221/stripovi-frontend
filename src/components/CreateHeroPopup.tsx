@@ -31,15 +31,14 @@ function CreateHeroPopup({
         name,
         alias,
       };
-      const reponse = await axiosPrivate.post(
+      await axiosPrivate.post(
         "/api/heroes/createHero",
         heroData,
       );
-      if(reponse.status === 201) {
         showToast("success", "Junak uspješno kreiran");
         fetch();
         onClose();
-      }
+
     } catch (err: any) {
       showToast("error", err.response.data.message);
     }

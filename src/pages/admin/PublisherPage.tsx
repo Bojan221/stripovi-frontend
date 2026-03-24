@@ -30,18 +30,15 @@ function PublisherPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await axiosPrivate.delete(
+      await axiosPrivate.delete(
         `/api/publishers/deletePublisher/${id}`,
       );
-      if (response.status === 200) {
         showToast("success", "Uspješno obrisan izdavač");
         fetchPublishers();
         return;
-      } else {
-        return showToast("error", "Greška pri brisanju");
-      }
-    } catch (err) {
-      showToast("error", "Greška pri brisanju");
+
+    } catch (err: any) {
+      showToast("error", err.response?.data?.message || "Greška pri brisanju");
     }
   };
 
@@ -105,7 +102,7 @@ function PublisherPage() {
                       <td className="px-6 py-4 text-sm text-center text-gray-700">
                         {publisher.createdBy ? (
                           <div className="flex items-center justify-center gap-3">
-                          <Avatar firstName={publisher.createdBy?.firstName || ""} lastName={publisher.createdBy?.lastName || ""} size="medium" />
+                          <Avatar firstName={publisher.createdBy?.firstName || ""} lastName={publisher.createdBy?.lastName || ""} profilePicture={publisher.createdBy?.profilePicture || ""} size="xs" />
                           <span className="font-medium text-gray-900">
                             {publisher.createdBy?.firstName}{" "}
                             {publisher.createdBy?.lastName}
@@ -169,7 +166,7 @@ function PublisherPage() {
                           Kreirao
                         </p>
                         <div className="flex items-center gap-2 mt-1">
-                          <Avatar firstName={publisher.createdBy?.firstName || ""} lastName={publisher.createdBy?.lastName || ""} size="medium" />
+                          <Avatar firstName={publisher.createdBy?.firstName || ""} lastName={publisher.createdBy?.lastName || ""} profilePicture={publisher.createdBy?.profilePicture || ""} size="medium" />
                           <p className="text-sm text-gray-900 font-medium">
                             {publisher.createdBy?.firstName}{" "}
                             {publisher.createdBy?.lastName}

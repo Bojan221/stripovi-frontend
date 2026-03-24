@@ -10,5 +10,6 @@ export interface Publisher {
     lastName: string;
     email: string;
     role: string;
+    profilePicture?: string;
   };
 }

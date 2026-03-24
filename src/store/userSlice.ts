@@ -22,8 +22,18 @@ const userSlice = createSlice({
       localStorage.removeItem("accessToken");
       localStorage.removeItem("user");
     },
+    updateUser: (state, action) => {
+      state.user = action.payload;
+      localStorage.setItem("user", JSON.stringify(action.payload));
+    },
+
+    updateUserNames: (state,action) => {
+      const updateUser = { ...state.user, firstName: action.payload.firstName, lastName: action.payload.lastName } as any;
+      state.user = updateUser;
+      localStorage.setItem("user", JSON.stringify(updateUser));
+    }
   },
 });
 
-export const { loginUser, logoutUser } = userSlice.actions;
+export const { loginUser, logoutUser, updateUser, updateUserNames } = userSlice.actions;
 export default userSlice.reducer;
