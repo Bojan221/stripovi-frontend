@@ -26,7 +26,6 @@ function HeroesTable({ refresh, onEdit }: HeroesTableProps) {
       const response = await axiosPrivate.get("/api/heroes/getAllHeroes");
       setHeroes(response.data.heroes || []);
     } catch (error) {
-      console.error("Greška pri dohvaćanju junaka:", error);
       showToast("error", "Greška pri dohvaćanju junaka");
     } finally {
       setLoading(false);
@@ -103,14 +102,13 @@ function HeroesTable({ refresh, onEdit }: HeroesTableProps) {
                             </span>
                           </div>
                         ) : (
-                          <span className="text-gray-500">Nepoznat korisnik</span>
+                          <span className="text-gray-500">
+                            Nepoznat korisnik
+                          </span>
                         )}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-700 text-center">
-                        {format(
-                          new Date(hero.createdAt),
-                          "dd-MM-yyyy HH:mm",
-                        )}
+                        {format(new Date(hero.createdAt), "dd-MM-yyyy HH:mm")}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-700 text-right">
                         <div className="flex gap-2 items-center justify-end">
@@ -189,10 +187,7 @@ function HeroesTable({ refresh, onEdit }: HeroesTableProps) {
                           Datum kreiranja
                         </p>
                         <p className="text-sm text-gray-900 font-medium mt-1">
-                          {format(
-                            new Date(hero.createdAt),
-                            "dd-MM-yyyy HH:mm",
-                          )}
+                          {format(new Date(hero.createdAt), "dd-MM-yyyy HH:mm")}
                         </p>
                       </div>
                     </div>

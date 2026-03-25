@@ -40,7 +40,6 @@ function UpdateUserPopup({ onClose, userId, fetch }: PopupProps) {
         setEmail(user.email);
         setRole(user.role);
       } catch (err) {
-        console.error("Greška pri učitavanju korisnika", err);
         showToast("error", "Greška pri učitavanju korisnika");
       } finally {
         setLoading(false);

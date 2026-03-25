@@ -25,7 +25,6 @@ function HeaderComponent() {
       );
     } catch (err) {
       showToast("error", "Greska pri odjavljivanju");
-      console.log(err);
     } finally {
       dispatch(logoutUser());
       showToast("success", "Uspjesno ste se odjavili");
@@ -137,13 +136,27 @@ function HeaderComponent() {
         <div className="flex items-center gap-4 ml-auto md:ml-0">
           {/* User Avatar */}
           <div className="relative hidden md:block">
-            <div onClick={() => setShowOptions(!showOptions)} className="cursor-pointer">
-              <Avatar firstName={user?.firstName || ""} lastName={user?.lastName || ""} profilePicture={user?.profilePicture || ""} size="medium"/>
+            <div
+              onClick={() => setShowOptions(!showOptions)}
+              className="cursor-pointer"
+            >
+              <Avatar
+                firstName={user?.firstName || ""}
+                lastName={user?.lastName || ""}
+                profilePicture={user?.profilePicture || ""}
+                size="medium"
+              />
             </div>
-            
+
             {showOptions && (
               <div className="absolute right-0 mt-2 shadow-lg w-44 rounded-md bg-white flex flex-col z-50">
-                <button className="text-md font-semibold hover:bg-slate-200 transition-all duration-200 px-4 py-2 text-left" onClick={()=> {navigator("/my-account");setShowOptions(false)}}>
+                <button
+                  className="text-md font-semibold hover:bg-slate-200 transition-all duration-200 px-4 py-2 text-left"
+                  onClick={() => {
+                    navigator("/my-account");
+                    setShowOptions(false);
+                  }}
+                >
                   Moj Profil
                 </button>
                 <button
@@ -180,8 +193,17 @@ function HeaderComponent() {
         }`}
       >
         {/* User Info Section at Top */}
-        <div className="bg-blue-400 px-5 py-6 flex items-center gap-4 relative" onClick={()=> navigator("/my-account")}>
-          <Avatar firstName={user?.firstName || ""} lastName={user?.lastName || ""} profilePicture={user?.profilePicture || ""} size="medium" className="bg-white! text-blue-400!"/>
+        <div
+          className="bg-blue-400 px-5 py-6 flex items-center gap-4 relative"
+          onClick={() => navigator("/my-account")}
+        >
+          <Avatar
+            firstName={user?.firstName || ""}
+            lastName={user?.lastName || ""}
+            profilePicture={user?.profilePicture || ""}
+            size="medium"
+            className="bg-white! text-blue-400!"
+          />
           <div className="text-white">
             <p className="font-bold">
               {user ? `${user.firstName} ${user.lastName}` : "Korisnik"}
