@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../store/store";
-import { updateUser, updateUserNames } from "../store/userSlice";
+import { updateUser, updateUserNames, updateUserEmail } from "../store/userSlice";
 import Avatar from "../components/core/Avatar";
 import {format} from "date-fns"; 
 import LoadingIndicator from "../components/core/LoadingComponent";
@@ -20,6 +20,10 @@ function MyAccountPage() {
   const [settingPicture, setSettingPicture] = useState(false);
   const [name,setName]= useState(user?.firstName || "");
   const [lastName,setLastName]= useState(user?.lastName || "");
+  const [email, setEmail] = useState(user?.email || "");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
   
   useEffect(() => {
     return () => {
@@ -91,6 +95,53 @@ function MyAccountPage() {
 
     } catch (err:any) {
       showToast("error", err.response?.data?.message || "Greška pri validaciji imena i prezimena");
+    }
+  }
+
+  const changeEmail = async () => { 
+    try { 
+       const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+       if(!email.trim()) { 
+          return showToast("error", "Email adresa ne smije biti prazna");
+       }
+       if(!regex.test(email)) { 
+          return showToast("error", "Neispravan format email adrese");
+       }
+
+       await axiosPrivate.put("/api/users/updateUserEmail", { email: email.trim() });
+       dispatch(updateUserEmail({ email: email.trim() }));
+       setIsEditingEmail(false);
+       showToast("success", "Email adresa uspješno ažurirana");
+
+    } catch(err:any) { 
+        showToast("error", err.response?.data?.message || "Greška pri validaciji email adrese");
+    }
+  }
+
+  const changePassword = async () => { 
+    try { 
+      if(!currentPassword || !newPassword || !confirmNewPassword) {
+        return showToast("error", "Sva polja su obavezna");
+      }
+      if(newPassword.length < 8) {
+        return showToast("error", "Nova šifra mora biti dugačka najmanje 8 karaktera");
+      }
+      if(newPassword === currentPassword) {
+        return showToast("error", "Nova šifra ne smije biti ista kao trenutna šifra");
+      }
+      if(newPassword !== confirmNewPassword) {
+        return showToast("error", "Nova šifra i potvrda nove šifre se ne poklapaju");
+      }
+
+      await axiosPrivate.put("/api/users/updateUserPassword", { currentPassword, newPassword, confirmNewPassword });
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
+      setIsChangingPassword(false);
+      showToast("success", "Šifra uspješno promijenjena");
+    } catch(err:any) { 
+        showToast("error", err.response?.data?.message || "Greška pri promjeni lozinke");
     }
   }
 
@@ -304,16 +355,14 @@ function MyAccountPage() {
                 </label>
                 <input
                   type="email"
-                  defaultValue={user?.email}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Unesite novu email adresu"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
-              <p className="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
-                ℹ️ Na novu email adresu biće poslana link za potvrdu
-              </p>
               <div className="pt-4 flex gap-3">
-                <button className="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-3 rounded-lg transition-colors">
+                <button className="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-3 rounded-lg transition-colors" onClick={()=> changeEmail()}>
                   Sačuvaj Email
                 </button>
               </div>
@@ -351,6 +400,8 @@ function MyAccountPage() {
                 </label>
                 <input
                   type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="Unesite trenutnu šifru"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -361,6 +412,8 @@ function MyAccountPage() {
                 </label>
                 <input
                   type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Unesite novu šifru"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -371,6 +424,8 @@ function MyAccountPage() {
                 </label>
                 <input
                   type="password"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
                   placeholder="Unesite novu šifru ponovo"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -379,7 +434,7 @@ function MyAccountPage() {
                 <IoIosWarning className="w-7 h-7" color="orange" /> Šifra mora biti dugačka najmanje 8 karaktera
               </p>
               <div className="pt-4 flex gap-3">
-                <button className="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-3 rounded-lg transition-colors">
+                <button className="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-3 rounded-lg transition-colors" onClick={() => changePassword()}>
                   Promeni Šifru
                 </button>
               </div>

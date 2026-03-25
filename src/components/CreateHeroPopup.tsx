@@ -18,7 +18,7 @@ function CreateHeroPopup({
   const [name, setName] = useState(updateData?.name || "");
   const [alias, setAlias] = useState(updateData?.alias || "");
 
-  const createHero = async () => {
+  const handleSubmit = async () => {
     try {
       if (!name.trim()) {
         return showToast("error", "Ime junaka je obavezno");
@@ -31,23 +31,33 @@ function CreateHeroPopup({
         name,
         alias,
       };
-      await axiosPrivate.post(
-        "/api/heroes/createHero",
-        heroData,
-      );
+
+      if (update && updateData) {
+        await axiosPrivate.put(
+          `/api/heroes/updateHero/${updateData._id}`,
+          heroData,
+        );
+        showToast("success", "Junak uspješno ažuriran");
+      } else {
+        await axiosPrivate.post(
+          "/api/heroes/createHero",
+          heroData,
+        );
         showToast("success", "Junak uspješno kreiran");
-        fetch();
-        onClose();
+      }
+
+      fetch();
+      onClose();
 
     } catch (err: any) {
-      showToast("error", err.response.data.message);
+      showToast("error", err.response?.data?.message || "Greška pri spremanju");
     }
   };
   return (
     <Popup
       title={update ? "Ažuriraj Junaka" : "Kreiraj Junaka"}
       onClose={onClose}
-      onConfirm={createHero}
+      onConfirm={handleSubmit}
       buttonText={update ? "Ažuriraj" : "Kreiraj"}
     >
       <div className="px-6 py-6 space-y-5">

@@ -8,6 +8,7 @@ export interface Hero {
     lastName: string;
     email: string;
     role: string;
+    profilePicture?: string;
   };
   createdAt: string;
   updatedAt: string;
