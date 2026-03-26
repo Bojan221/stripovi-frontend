@@ -17,17 +17,20 @@ function EditionsPage() {
   const [searchParams] = useSearchParams();
 
   const publisher = searchParams.get("publisher") || "";
+  const hero = searchParams.get("hero") || "";
 
   const fetchEditions = async () => {
     try {
-      const response = await axiosPrivate.get("/api/editions/getAllEditions");
-
-      console.log(response.data);
+      const queryParams = new URLSearchParams();
+      if (publisher) queryParams.append("publisher", publisher);
+      if (hero) queryParams.append("hero", hero);
+      const response = await axiosPrivate.get(`/api/editions/getAllEditions?${queryParams.toString()}`);
+      setEditions(response.data);
     } catch (err: any) {
       showToast("error", err?.response?.data?.message || "Došlo je do greške");
     }
   };
-
+console.log(editions)
 useEffect(() => {
   const fetchData = async () => {
     try {
@@ -51,7 +54,7 @@ useEffect(() => {
   };
 
   fetchData();
-}, [publisher]); 
+}, [publisher,hero]); 
 
   if (isLoading) {
     return <LoadingIndicator  placement="fullscreen" size="lg"/>;
