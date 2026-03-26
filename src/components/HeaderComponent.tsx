@@ -143,7 +143,9 @@ function HeaderComponent() {
               <Avatar
                 firstName={user?.firstName || ""}
                 lastName={user?.lastName || ""}
-                profilePicture={user?.profilePicture || ""}
+                                             profilePicture={
+                                user?.profilePicture || ""
+                              }
                 size="medium"
               />
             </div>

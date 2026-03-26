@@ -154,7 +154,7 @@ function AdminUserPage() {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                         <Avatar firstName={user.firstName} lastName={user.lastName} size="medium" />
+                         <Avatar firstName={user.firstName} lastName={user.lastName} profilePicture={user.profilePicture} size="medium" />
                           <span className="font-medium text-gray-900">
                             {user.firstName} {user.lastName}
                           </span>
@@ -212,10 +212,7 @@ function AdminUserPage() {
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-blue-400 flex items-center justify-center text-white font-bold text-lg">
-                        {user.firstName[0]}
-                        {user.lastName[0]}
-                      </div>
+                      <Avatar firstName={user.firstName} lastName={user.lastName} profilePicture={user.profilePicture} size="medium" />
                       <div>
                         <p className="font-bold text-gray-900">
                           {user.firstName} {user.lastName}

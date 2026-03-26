@@ -42,7 +42,7 @@ function HeroesTable({ refresh, onEdit }: HeroesTableProps) {
     }
   };
 
-  if (loading) return <LoadingComponent />;
+  if (loading) return <LoadingComponent placement="fullscreen" size="lg" />;
 
   return (
     <div className="mt-10">
