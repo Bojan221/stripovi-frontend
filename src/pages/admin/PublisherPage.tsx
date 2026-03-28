@@ -156,65 +156,65 @@ function PublisherPage() {
               return (
                 <div
                   key={publisher._id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-blue-500"
+                  className="bg-white rounded-xl shadow-lg overflow-hidden border-l-4 border-blue-500 flex flex-col"
                 >
-                  <div className="p-5">
-                    <div className="mb-4 pb-4 border-b border-slate-200">
-                      <p className="font-bold text-gray-900 text-2xl mb-2">
+                  {/* Header */}
+                  <div className="p-4 bg-slate-50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xl font-bold text-gray-900">
                         {publisher.name}
                       </p>
-                      <p className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+                      <p className="text-sm text-blue-800 font-semibold mt-1">
                         {publisher.country}
                       </p>
                     </div>
+                  </div>
 
-                    <div className="space-y-3 bg-slate-50 rounded-lg p-4 mb-4">
-                      <div>
-                        <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">
-                          Kreirao
-                        </p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Avatar
-                            firstName={publisher.createdBy?.firstName || ""}
-                            lastName={publisher.createdBy?.lastName || ""}
-                            {...(publisher?.createdBy?.profilePicture && {
-                              profilePicture:
-                                publisher.createdBy.profilePicture,
-                            })}
-                            size="medium"
-                          />
-                          <p className="text-sm text-gray-900 font-medium">
+                  {/* Creator info  */}
+                  <div className="p-4 space-y-2 border-t border-b border-slate-200">
+                    <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">
+                      Kreirao
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
                             {publisher.createdBy?.firstName}{" "}
                             {publisher.createdBy?.lastName}
                           </p>
+                          <p className="text-xs text-gray-500">
+                            {publisher.createdBy?.email}
+                          </p>
                         </div>
                       </div>
-                      <div>
-                        <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">
-                          Datum kreiranja
-                        </p>
-                        <p className="text-sm text-gray-900 font-medium mt-1">
-                          {format(
-                            new Date(publisher.createdAt),
-                            "dd-MM-yyyy HH:mm",
-                          )}
-                        </p>
-                      </div>
+                      <p className="text-xs text-gray-500">
+                        {format(
+                          new Date(publisher.createdAt),
+                          "dd-MM-yyyy HH:mm",
+                        )}
+                      </p>
                     </div>
+                  </div>
 
-                    <div className="flex items-center gap-2">
-                      <button className="w-full bg-orange-500 hover:bg-orange-700 text-white py-2 rounded-md font-semibold text-sm transition-colors flex items-center justify-center">
-                        <FaEdit size={16} className="mr-2" />
-                        Uredi
-                      </button>
-                      <button
-                        className="w-full bg-red-500 hover:bg-red-700 text-white py-2 rounded-md font-semibold text-sm transition-colors flex items-center justify-center"
-                        onClick={() => handleDelete(publisher._id)}
-                      >
-                        <FaTrashAlt size={16} className="mr-2" />
-                        Briši
-                      </button>
-                    </div>
+                  {/* Buttons */}
+                  <div className="flex gap-2 p-4 mt-auto">
+                    <button
+                      className="text-sm flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
+                      onClick={() => {
+                        setShowCreatePopup(true);
+                        setUpdatePublisher(publisher);
+                      }}
+                    >
+                      <FaEdit size={16} />
+                      Uredi
+                    </button>
+                    <button
+                      className="text-sm flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
+                      onClick={() => handleDelete(publisher._id)}
+                    >
+                      <FaTrashAlt size={16} />
+                      Briši
+                    </button>
                   </div>
                 </div>
               );

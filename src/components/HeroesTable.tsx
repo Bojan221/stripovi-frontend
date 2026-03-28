@@ -139,33 +139,29 @@ function HeroesTable({ refresh, onEdit }: HeroesTableProps) {
               return (
                 <div
                   key={hero._id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-orange-400"
+                  className="bg-white rounded-xl shadow-lg overflow-hidden border-l-4 border-orange-400 flex flex-col"
                 >
-                  <div className="p-5">
-                    <div className="mb-4 pb-4 border-b border-slate-200">
-                      <p className="font-bold text-gray-900 text-2xl mb-2">
+                  {/* Header */}
+                  <div className="p-4 bg-slate-50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-2xl font-bold text-gray-900">
                         {hero.name}
                       </p>
-                      <p className="inline-block bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full">
+                      <p className="text-xs font-semibold text-orange-800 bg-orange-100 inline-block px-3 py-1 rounded-full mt-1">
                         {hero.alias}
                       </p>
                     </div>
+                  </div>
 
-                    <div className="space-y-3 bg-slate-50 rounded-lg p-4 mb-4">
-                      <div>
-                        <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">
-                          Kreirao
-                        </p>
-                        {hero.createdBy ? (
-                          <div className="flex items-center gap-2 mt-1">
-                            <Avatar
-                              firstName={hero.createdBy?.firstName || ""}
-                              lastName={hero.createdBy?.lastName || ""}
-                              profilePicture={
-                                hero.createdBy?.profilePicture || ""
-                              }
-                              size="medium"
-                            />
+                  {/* Creator info */}
+                  <div className="p-4 space-y-3 border-t border-b border-slate-200">
+                    <div>
+                      <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">
+                        Kreirao
+                      </p>
+                      {hero.createdBy ? (
+                        <div className="flex items-center justify-between mt-1">
+                          <div className="flex items-center gap-2">
                             <div>
                               <p className="text-sm text-gray-900 font-medium">
                                 {hero.createdBy?.firstName}{" "}
@@ -176,38 +172,37 @@ function HeroesTable({ refresh, onEdit }: HeroesTableProps) {
                               </p>
                             </div>
                           </div>
-                        ) : (
-                          <p className="text-sm text-gray-500 mt-1">
-                            Nepoznat korisnik
+                          <p className="text-xs text-gray-500">
+                            {format(
+                              new Date(hero.createdAt),
+                              "dd-MM-yyyy HH:mm",
+                            )}
                           </p>
-                        )}
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">
-                          Datum kreiranja
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-500 mt-1">
+                          Nepoznat korisnik
                         </p>
-                        <p className="text-sm text-gray-900 font-medium mt-1">
-                          {format(new Date(hero.createdAt), "dd-MM-yyyy HH:mm")}
-                        </p>
-                      </div>
+                      )}
                     </div>
+                  </div>
 
-                    <div className="flex items-center gap-2">
-                      <button
-                        className="w-full bg-orange-500 hover:bg-orange-700 text-white py-2 rounded-md font-semibold text-sm transition-colors flex items-center justify-center"
-                        onClick={() => onEdit?.(hero)}
-                      >
-                        <FaEdit size={16} className="mr-2" />
-                        Uredi
-                      </button>
-                      <button
-                        className="w-full bg-red-500 hover:bg-red-700 text-white py-2 rounded-md font-semibold text-sm transition-colors flex items-center justify-center"
-                        onClick={() => handleDelete(hero._id)}
-                      >
-                        <FaTrashAlt size={16} className="mr-2" />
-                        Briši
-                      </button>
-                    </div>
+                  {/* Buttons */}
+                  <div className="flex gap-2 p-4 mt-auto">
+                    <button
+                      className="text-sm flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
+                      onClick={() => onEdit?.(hero)}
+                    >
+                      <FaEdit size={16} />
+                      Uredi
+                    </button>
+                    <button
+                      className="text-sm flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
+                      onClick={() => handleDelete(hero._id)}
+                    >
+                      <FaTrashAlt size={16} />
+                      Briši
+                    </button>
                   </div>
                 </div>
               );

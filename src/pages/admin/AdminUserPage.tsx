@@ -12,7 +12,6 @@ import { AiOutlineStop } from "react-icons/ai";
 import Avatar from "../../components/core/Avatar";
 import { IoIosWarning } from "react-icons/io";
 
-
 function AdminUserPage() {
   const [allUsers, setAllUsers] = useState<User[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -30,7 +29,10 @@ function AdminUserPage() {
       setError(
         err.response?.data?.message || "Greška pri učitavanju korisnika",
       );
-      showToast("error", err.response?.data?.message || "Greška pri učitavanju korisnika");
+      showToast(
+        "error",
+        err.response?.data?.message || "Greška pri učitavanju korisnika",
+      );
     } finally {
       setLoading(false);
     }
@@ -71,7 +73,10 @@ function AdminUserPage() {
       }
       fetchData();
     } catch (err: any) {
-      showToast("error", err.response?.data?.message || "Greška pri brisanju korisnika");
+      showToast(
+        "error",
+        err.response?.data?.message || "Greška pri brisanju korisnika",
+      );
     }
   };
 
@@ -93,21 +98,21 @@ function AdminUserPage() {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            <div className="bg-linear-to-br from-blue-500 to-blue-600 rounded-lg p-4 text-white">
+            <div className="bg-linear-to-br from-blue-500 to-blue-600 rounded-lg p-4 text-white flex md:flex-col max-md:items-center justify-between gap-1">
               <p className="text-sm font-semibold opacity-90">
                 Ukupno korisnika
               </p>
-              <p className="text-2xl font-bold mt-1">{allUsers?.length || 0}</p>
+              <p className="text-2xl font-bold">{allUsers?.length || 0}</p>
             </div>
-            <div className="bg-linear-to-br from-red-500 to-red-600 rounded-lg p-4 text-white">
+            <div className="bg-linear-to-br from-red-500 to-red-600 rounded-lg p-4 text-white flex md:flex-col max-md:items-center justify-between gap-1">
               <p className="text-sm font-semibold opacity-90">Admin</p>
-              <p className="text-2xl font-bold mt-1">
+              <p className="text-2xl font-bold">
                 {allUsers?.filter((u) => u.role === "admin").length || 0}
               </p>
             </div>
-            <div className="bg-linear-to-br from-yellow-500 to-yellow-600 rounded-lg p-4 text-white">
+            <div className="bg-linear-to-br from-yellow-500 to-yellow-600 rounded-lg p-4 text-white flex md:flex-col max-md:items-center justify-between gap-1">
               <p className="text-sm font-semibold opacity-90">Moderatori</p>
-              <p className="text-2xl font-bold mt-1">
+              <p className="text-2xl font-bold ">
                 {allUsers?.filter((u) => u.role === "moderator").length || 0}
               </p>
             </div>
@@ -119,7 +124,9 @@ function AdminUserPage() {
       <div className="max-w-7xl mx-auto">
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <p className="text-red-800 font-semibold flex items-center gap-2"><IoIosWarning className="w-7 h-7" color="orange" /> {error}</p>
+            <p className="text-red-800 font-semibold flex items-center gap-2">
+              <IoIosWarning className="w-7 h-7" color="orange" /> {error}
+            </p>
           </div>
         )}
 
@@ -154,7 +161,12 @@ function AdminUserPage() {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                         <Avatar firstName={user.firstName} lastName={user.lastName} profilePicture={user.profilePicture} size="medium" />
+                          <Avatar
+                            firstName={user.firstName}
+                            lastName={user.lastName}
+                            profilePicture={user.profilePicture}
+                            size="medium"
+                          />
                           <span className="font-medium text-gray-900">
                             {user.firstName} {user.lastName}
                           </span>
@@ -212,7 +224,12 @@ function AdminUserPage() {
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <Avatar firstName={user.firstName} lastName={user.lastName} profilePicture={user.profilePicture} size="medium" />
+                      <Avatar
+                        firstName={user.firstName}
+                        lastName={user.lastName}
+                        profilePicture={user.profilePicture}
+                        size="medium"
+                      />
                       <div>
                         <p className="font-bold text-gray-900">
                           {user.firstName} {user.lastName}

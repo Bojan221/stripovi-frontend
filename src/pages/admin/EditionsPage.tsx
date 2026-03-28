@@ -100,11 +100,11 @@ function EditionsPage() {
 
       <div>
         <EditionsTable editions={editions} onRefresh={() => fetchEditions()} />
-        <div className="flex items-center justify-between pt-3 px-3">
+        <div className="flex max-md:flex-col max-md:gap-2 items-center justify-between pt-3 px-3">
           <div>
             <PaginationRounded totalPages={totalPages} />
           </div>
-          <div className="flex items-center gap-2 text-gray-800 font-semibold text-xl">
+          <div className="flex items-center gap-2 text-gray-800 font-semibold md:text-xl max-md:w-full max-md:justify-end">
             Ukupno edicija:
             <span>{totalEditions}</span>
           </div>

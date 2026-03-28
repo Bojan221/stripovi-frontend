@@ -158,73 +158,68 @@ function EditionsTable({ editions, onRefresh, onEdit }: EditionsTableProps) {
         </table>
       </div>
 
-      {/* Mobile - Compact Scrollable Table */}
-      <div className="md:hidden bg-white rounded-lg shadow-md overflow-x-auto">
-        <table className="w-full min-w-max">
-          <thead className="bg-slate-100 border-b border-slate-300 sticky top-0">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-900 whitespace-nowrap">
-                Naziv
-              </th>
-              <th className="px-4 py-3 text-center text-xs font-semibold text-gray-900 whitespace-nowrap">
-                Izdavač
-              </th>
-              <th className="px-4 py-3 text-center text-xs font-semibold text-gray-900 whitespace-nowrap">
-                Junaci
-              </th>
-              <th className="px-4 py-3 text-center text-xs font-semibold text-gray-900 whitespace-nowrap">
-                Akcije
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {editions.map((edition: Edition, idx) => {
-              return (
-                <tr
-                  key={edition._id}
-                  className={`border-b border-slate-200 hover:bg-orange-50 transition-colors ${
-                    idx % 2 === 0 ? "bg-white" : "bg-slate-50"
-                  }`}
-                >
-                  <td className="px-4 py-3 text-xs text-gray-900 font-medium whitespace-nowrap">
-                    {edition.name}
-                  </td>
-                  <td className="px-4 py-3 text-center text-xs text-gray-700">
-                    <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded-full truncate max-w-[100px]">
-                      {edition.publisher.name.substring(0, 12)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-center text-xs text-gray-700">
-                    <button
-                      onClick={() => openHeroModal(edition.heroes)}
-                      className="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full hover:bg-green-200 transition-colors cursor-pointer whitespace-nowrap"
-                    >
-                      {edition.heroes?.length}
-                    </button>
-                  </td>
-                  <td className="px-4 py-3 text-center text-xs">
-                    <div className="flex gap-2 items-center justify-center">
-                      <button
-                        className="cursor-pointer hover:opacity-70 transition-opacity"
-                        onClick={() => onEdit?.(edition)}
-                        title="Uredi"
+      {/* Mobile */}
+      <div className="md:hidden bg-white rounded-lg shadow-md flex flex-col gap-2">
+        {editions?.map((edition: Edition) => {
+          return (
+            <div
+              key={edition._id}
+              className="flex flex-col gap-1 divide-y divide-slate-300 bg-white rounded-xl shadow-lg overflow-hidden border-l-4 border-blue-500 px-2"
+            >
+              <div className="flex justify-between items-end py-2">
+                <p className="text-xl font-semibold text-gray-900">
+                  {edition.name}
+                </p>
+                <p className="text-md text-gray-800">
+                  {" "}
+                  {edition.publisher.name}
+                </p>
+              </div>
+              <div className="flex items-center py-2">
+                <p className="text-md text-gray-800 mr-1">Junaci:</p>
+                <div>
+                  {edition.heroes?.map((hero: any) => {
+                    return (
+                      <span
+                        key={hero._id}
+                        className="inline-block bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full"
                       >
-                        <FaEdit size={14} color="orange" />
-                      </button>
-                      <button
-                        className="cursor-pointer hover:opacity-70 transition-opacity"
-                        onClick={() => handleDelete(edition._id)}
-                        title="Briši"
-                      >
-                        <FaTrashAlt size={14} color="red" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                        {hero.name}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="py-2 flex flex-col gap-1">
+                <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">
+                  Kreirao
+                </p>
+                <div className="flex gap-1">
+                  <div className="flex flex-col justify-between">
+                    <p className="text-sm font-medium text-gray-900">
+                      {edition.createdBy?.firstName +
+                        " " +
+                        edition.createdBy?.lastName}
+                    </p>
+                    <p className="text-sm font-medium text-gray-900">
+                      {edition.createdBy?.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-2 p-4 mt-auto">
+                <button className="text-sm flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors">
+                  <FaEdit size={16} />
+                  Uredi
+                </button>
+                <button className="text-sm flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors">
+                  <FaTrashAlt size={16} />
+                  Briši
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Hero Modal */}
