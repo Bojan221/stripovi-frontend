@@ -143,9 +143,7 @@ function HeaderComponent() {
               <Avatar
                 firstName={user?.firstName || ""}
                 lastName={user?.lastName || ""}
-                                             profilePicture={
-                                user?.profilePicture || ""
-                              }
+                profilePicture={user?.profilePicture || ""}
                 size="medium"
               />
             </div>
@@ -195,18 +193,28 @@ function HeaderComponent() {
         }`}
       >
         {/* User Info Section at Top */}
-        <div
-          className="bg-blue-400 px-5 py-6 flex items-center gap-4 relative"
-          onClick={() => navigator("/my-account")}
-        >
-          <Avatar
-            firstName={user?.firstName || ""}
-            lastName={user?.lastName || ""}
-            profilePicture={user?.profilePicture || ""}
-            size="medium"
-            className="bg-white! text-blue-400!"
-          />
-          <div className="text-white">
+        <div className="bg-blue-400 px-5 py-6 flex items-center gap-4 relative">
+          <div
+            onClick={() => {
+              navigator("/my-account");
+              setShowMobileMenu(false);
+            }}
+          >
+            <Avatar
+              firstName={user?.firstName || ""}
+              lastName={user?.lastName || ""}
+              profilePicture={user?.profilePicture || ""}
+              size="medium"
+              className="bg-white! text-blue-400!"
+            />
+          </div>
+          <div
+            className="text-white"
+            onClick={() => {
+              navigator("/my-account");
+              setShowMobileMenu(false);
+            }}
+          >
             <p className="font-bold">
               {user ? `${user.firstName} ${user.lastName}` : "Korisnik"}
             </p>
@@ -214,7 +222,10 @@ function HeaderComponent() {
           </div>
           <div
             className="absolute top-1 right-2  text-white font-semibold"
-            onClick={() => setShowMobileMenu(false)}
+            onClick={(e) => {
+              e.preventDefault;
+              setShowMobileMenu(false);
+            }}
           >
             <IoClose size={24} />
           </div>
