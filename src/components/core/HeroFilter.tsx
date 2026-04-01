@@ -20,6 +20,15 @@ function HeroFilter({heroes} : {heroes: Hero[]}) {
     setDropdownOpen(false);
     setSearchParams({ ...Object.fromEntries(searchParams), hero: id });
   }
+  const resetHero = () => {
+    const params = Object.fromEntries(searchParams)
+    delete params.hero;
+    setSearchParams(params);
+    setHeroId(null);
+    setHeroName(null);
+    setDropdownOpen(false)
+
+  }
   return (
    <div className="cursor-pointer relative min-w-37.5">
     <div className="flex items-center justify-between gap-2 bg-gray-100 border-slate-100 rounded-lg px-3 py-2" onClick={() => setDropdownOpen(!dropdownOpen)}>
@@ -28,6 +37,7 @@ function HeroFilter({heroes} : {heroes: Hero[]}) {
     </div>
     {dropdownOpen && (
       <div className="absolute bottom-0 left-0 right-0 translate-y-full bg-white rounded-lg shadow-lg mt-1 p-2 z-50 max-h-60 overflow-y-auto">
+        <p className="px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors" onClick={()=> resetHero()}>Svi Heroji</p>
         {heroes.length > 0 && (heroes.map((hero) => {
           return (
             <p key={hero._id} onClick={() => handleHeroSelect(hero._id, hero.name)} className={`px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors ${heroId === hero._id && "bg-orange-100"}`}>

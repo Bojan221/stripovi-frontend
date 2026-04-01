@@ -11,16 +11,27 @@ interface PopupProps {
   heroes: Hero[];
   onClose: () => void;
   fetchData: () => void;
+  update?:boolean;
+  updateData?: {
+    publisher?:string;
+    edition?:string;
+    heroesIds?:string[];
+    editionId?:string;
+  };
+  editionId?:string;
 }
 function CreateEditionPopup({
   publishers,
   heroes,
   onClose,
   fetchData,
+  update=false,
+  updateData
+
 }: PopupProps) {
-  const [editionName, setEditionName] = useState("");
-  const [publisherId, setPublisherId] = useState("");
-  const [heroIds, setHeroIds] = useState<string[]>([]);
+  const [editionName, setEditionName] = useState(updateData?.edition || "");
+  const [publisherId, setPublisherId] = useState(updateData?.publisher || "");
+  const [heroIds, setHeroIds] = useState<string[]>(updateData?.heroesIds || []);
 
   const createEdition = async () => {
     try {
@@ -55,12 +66,42 @@ function CreateEditionPopup({
       );
     }
   };
+
+  const updateEdition = async () => { 
+    try {
+      if (!editionName.trim()) {
+        return showToast("error", "Ime edicije je obavezno");
+      }
+      if (!publisherId) {
+        return showToast("error", "Izdavač edicije je obavezan");
+      }
+      if (heroIds.length === 0) {
+        return showToast("error", "Junak edicije je obavezan");
+      }
+      const editionId = updateData?.editionId
+        const editionData = {
+          name: editionName,
+          publisher: publisherId,
+          heroes: heroIds,
+        };
+      await axiosPrivate.put(`/api/editions/updateEdition/${editionId}`, editionData)
+
+       showToast("success", "Edicija je uspješno izmijenjena");
+      setEditionName("");
+      setPublisherId("");
+      setHeroIds([]);
+      fetchData();
+      onClose();
+    }catch (err:any) { 
+      showToast("error", err?.response?.data?.message || "Došlo je do greške prilikom ažuriranja edicije.")
+    }
+  }
   return (
     <Popup
       onClose={onClose}
-      title="Kreiraj Ediciju"
-      buttonText="Kreiraj"
-      onConfirm={() => createEdition()}
+      title={update? "Uredi Ediciju":"Kreiraj Ediciju"}
+      buttonText={update? "Ažuriraj":"Kreiraj"}
+      onConfirm={update?()=> updateEdition() :() => createEdition()}
     >
       <div className="px-6 py-6 space-y-5">
         <div>

@@ -75,7 +75,7 @@ function EditionsPage() {
 
   return (
     <div className="px-4 py-3 min-h-120">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center max-md:flex-col gap-4">
         <button
           className="py-3 px-5 rounded-lg bg-orange-400 cursor-pointer font-semibold text-white text-sm md:text-lg max-md:w-full"
           onClick={() => {
@@ -84,7 +84,7 @@ function EditionsPage() {
         >
           Dodaj Ediciju
         </button>
-        <div className="flex justify-end gap-2 max-md:hidden">
+        <div className="flex max-md:w-full md:justify-end gap-2">
           <PublisherFilter publishers={publishers || []} />
           <HeroFilter heroes={heroes || []} />
         </div>
@@ -99,7 +99,7 @@ function EditionsPage() {
       )}
 
       <div>
-        <EditionsTable editions={editions} onRefresh={() => fetchEditions()} />
+        <EditionsTable editions={editions} onRefresh={() => fetchEditions()} publishers={publishers || []} heroes={heroes || []} />
         <div className="flex max-md:flex-col max-md:gap-2 items-center justify-between pt-3 px-3">
           <div>
             <PaginationRounded totalPages={totalPages} />

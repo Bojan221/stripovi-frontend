@@ -21,6 +21,15 @@ function PublisherFilter({publishers} : {publishers: Publisher[]}) {
     setSearchParams({ ...Object.fromEntries(searchParams), publisher: id });
     
   }
+  const resetPublisher = () => { 
+  const params = Object.fromEntries(searchParams);
+  delete params.publisher;
+  setSearchParams(params);
+  setPublisherId(null);
+  setPublisherName(null);
+  setDropdownOpen(false);
+  }
+
   return (
    <div className="cursor-pointer relative min-w-37.5">
     <div className="flex items-center justify-between gap-2 bg-gray-100 border-slate-100 rounded-lg px-3 py-2" onClick={() => setDropdownOpen(!dropdownOpen)}>
@@ -29,6 +38,7 @@ function PublisherFilter({publishers} : {publishers: Publisher[]}) {
     </div>
     {dropdownOpen && (
       <div className="absolute bottom-0 left-0 right-0 translate-y-full bg-white rounded-lg shadow-lg mt-1 p-2 z-50 max-h-60 overflow-y-auto">
+        <p className="px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors" onClick={()=> resetPublisher()}>Svi izdavači</p>
         {publishers.length > 0 && (publishers.map((publisher) => {
           return (
             <p key={publisher._id} onClick={() => handlePublisherSelect(publisher._id, publisher.name)} className={`px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors ${publisherId === publisher._id && "bg-orange-100"}`}>
