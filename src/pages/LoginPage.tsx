@@ -139,6 +139,12 @@ function LoginPage() {
           )}
         </button>
 
+        <div className="text-sm text-slate-700 flex items-center justify-center hover:text-blue-400 transition-all duration-200 hover:underline cursor-pointer">
+          <NavLink to={'/forgot-password'}>
+          Zaboravljena lozinka?
+          </NavLink>
+          </div>
+
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t-2 border-slate-200"></div>

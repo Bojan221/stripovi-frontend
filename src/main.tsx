@@ -21,6 +21,7 @@ import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
 import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
 import { store } from "./store/store.ts";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -96,6 +97,10 @@ const router = createBrowserRouter([
     path: "/register",
     element: <RegisterPage />,
   },
+  {
+    path:"/forgot-password",
+    element:<ForgotPasswordPage/>
+  }
 ]);
 
 createRoot(document.getElementById("root")!).render(

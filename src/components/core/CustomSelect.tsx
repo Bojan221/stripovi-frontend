@@ -67,8 +67,11 @@ function CustomSelect({
         {isOpen && (
           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
             <div className="max-h-60 overflow-y-auto">
-              {options.map((option) => (
-                <button
+              {options.length === 0? (
+                <p className="px-3 py-2 text-slate-500">Nema Podataka</p>
+              ): (
+                options.map((option) => (
+                  <button
                   key={option._id}
                   type="button"
                   onClick={() => {
@@ -77,11 +80,12 @@ function CustomSelect({
                   }}
                   className={`w-full px-4 py-2 text-left hover:bg-green-100 transition-colors ${
                     value === option._id ? "bg-green-200 font-semibold" : ""
-                  }`}
-                >
-                  {option.name}
-                </button>
-              ))}
+                    }`}
+                    >
+                    {option.name}
+                    </button>
+                  ))
+                )}
             </div>
           </div>
         )}

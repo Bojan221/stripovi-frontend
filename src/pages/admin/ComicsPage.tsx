@@ -24,7 +24,7 @@ function ComicsPage() {
   }
   const fetchEditions = async () => { 
     try { 
-      const response = await axiosPrivate.get("/api/editions/getAllEditions");
+      const response = await axiosPrivate.get("/api/editions/getAllEditions"    );
       setEditions(response.data.editions)
     }catch(err:any) { 
       showToast("error", err?.response?.data?.message || "Došlo je do greške")
@@ -68,7 +68,7 @@ return (
               </button>
             </div>
 
-            {popupOpen && <ComicActionPopup heroes={heroes || []} publishers={publishers || []} editions={editions || []} onClose={()=> setPopupOpen(false)}/>}
+            {popupOpen && <ComicActionPopup onClose={()=> setPopupOpen(false)}/>}
         </>
       )}
   </div>
