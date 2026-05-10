@@ -72,7 +72,7 @@ function ComicsPage() {
   useEffect(() => {
     fetchPublishers();
     fetchHeroes();
-  });
+  }, []);
 
   useEffect(() => {
     fetchEditions();

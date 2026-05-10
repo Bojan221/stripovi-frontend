@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Popup from "./core/Popup";
 import CustomSelect from "./core/CustomSelect";
 import { axiosPrivate } from "../api/axiosInstance";
@@ -6,22 +6,36 @@ import { showToast } from "../utils/toast";
 import type { Hero } from "../types/Hero";
 import type { Publisher } from "../types/Publisher";
 import type { Edition } from "../types/Edition";
+import type { Comic } from "../types/Comic";
 import LoadingIndicator from "./core/LoadingComponent";
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 interface PopupProps {
   onClose: () => void;
+  comic?: Comic;
+  onRefresh?: () => void;
 }
 
-function ComicActionPopup({ onClose }: PopupProps) {
+function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
+  const isUpdate = !!comic;
+  const prevPublisherId = useRef(comic?.edition?.publisher?._id || "");
+
   const [heroes, setHeroes] = useState<Hero[] | null>(null);
   const [publishers, setPublishers] = useState<Publisher[] | null>(null);
   const [editions, setEditions] = useState<Edition[] | null>(null);
-  const [heroId, setHeroId] = useState<string>("");
-  const [publisherId, setPublisherId] = useState<string>("");
-  const [editionId, setEditionId] = useState<string>("");
-  const [title, setTitle] = useState("");
-  const [issueNumber, setIssueNumber] = useState("");
+  const [heroId, setHeroId] = useState<string>(comic?.hero?._id || "");
+  const [publisherId, setPublisherId] = useState<string>(
+    comic?.edition?.publisher?._id || "",
+  );
+  const [editionId, setEditionId] = useState<string>(
+    comic?.edition?._id || "",
+  );
+  const [title, setTitle] = useState(comic?.title || "");
+  const [issueNumber, setIssueNumber] = useState(comic?.issueNumber || "");
   const [coverPicture, setCoverPicture] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const fetchHeroes = async () => {
     try {
       const response = await axiosPrivate.get("/api/heroes/getAllHeroes");
@@ -30,16 +44,18 @@ function ComicActionPopup({ onClose }: PopupProps) {
       showToast("error", err?.response?.data?.message || "Došlo je do greške");
     }
   };
-  const fetchEditions = async () => {
+
+  const fetchEditions = async (pubId: string) => {
     try {
       const response = await axiosPrivate.get(
-        `/api/editions/getAllEditions?publisher=${publisherId}&hero=${heroId}`,
+        `/api/editions/getAllEditions?publisher=${pubId}&hero=${heroId}`,
       );
       setEditions(response.data.editions);
     } catch (err: any) {
       showToast("error", err?.response?.data?.message || "Došlo je do greške");
     }
   };
+
   const fetchPublishers = async () => {
     try {
       const response = await axiosPrivate.get(
@@ -56,6 +72,7 @@ function ComicActionPopup({ onClose }: PopupProps) {
       setLoading(true);
       try {
         await Promise.all([fetchHeroes(), fetchPublishers()]);
+        await fetchEditions(publisherId);
       } finally {
         setLoading(false);
       }
@@ -64,63 +81,62 @@ function ComicActionPopup({ onClose }: PopupProps) {
   }, []);
 
   useEffect(() => {
-    const loadEditions = async () => {
-      try {
-        await fetchEditions();
-        setEditionId("");
-      } catch (err) {
-        showToast("error", "Nije uspjelo");
-      }
-    };
-    loadEditions();
+    if (prevPublisherId.current === publisherId) return;
+    prevPublisherId.current = publisherId;
+    fetchEditions(publisherId).then(() => setEditionId(""));
   }, [publisherId]);
 
-  const createComic = async () => {
-    if (
-      !title.trim() ||
-      !issueNumber.trim() ||
-      !heroId ||
-      !editionId ||
-      !coverPicture
-    ) {
+  const handleSubmit = async () => {
+    if (!title.trim() || !issueNumber.trim() || !heroId || !editionId) {
+      return showToast("error", "Forma nije popunjena ispravno!");
+    }
+    if (!isUpdate && !coverPicture) {
       return showToast("error", "Forma nije popunjena ispravno!");
     }
 
-    try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("title", title);
-      formDataToSend.append("issueNumber", issueNumber);
-      formDataToSend.append("heroId", heroId);
-      formDataToSend.append("editionId", editionId);
-      formDataToSend.append("cover", coverPicture);
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("issueNumber", issueNumber);
+    formData.append("heroId", heroId);
+    formData.append("editionId", editionId);
+    if (coverPicture) formData.append("cover", coverPicture);
 
-      await axiosPrivate.post("/api/comics/createComic", formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      showToast("success", "Strip je uspješno kreiran.");
-      setHeroId("");
-      setPublisherId("");
-      setEditionId("");
-      setTitle("");
-      setIssueNumber("");
-      setCoverPicture(null);
+    try {
+      if (isUpdate) {
+        await axiosPrivate.put(
+          `/api/comics/updateComic/${comic._id}`,
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } },
+        );
+        showToast("success", "Strip je uspješno ažuriran.");
+      } else {
+        await axiosPrivate.post("/api/comics/createComic", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        showToast("success", "Strip je uspješno kreiran.");
+      }
+      onRefresh?.();
+      onClose();
     } catch (err: any) {
       showToast(
         "error",
-        err?.response?.data?.message ||
-          "Došlo je do greške prilikom dodavanja stripa.",
+        err?.response?.data?.message || "Došlo je do greške.",
       );
     }
   };
 
+  const previewUrl = coverPicture
+    ? URL.createObjectURL(coverPicture)
+    : comic?.coverImage
+      ? `${API_URL}/uploads/comics/${comic.coverImage}`
+      : null;
+
   return (
     <Popup
-      title="Dodaj Strip"
-      buttonText="Kreiraj"
-      onClose={() => onClose()}
-      onConfirm={() => createComic()}
+      title={isUpdate ? "Uredi Strip" : "Dodaj Strip"}
+      buttonText={isUpdate ? "Sačuvaj" : "Kreiraj"}
+      onClose={onClose}
+      onConfirm={handleSubmit}
     >
       {loading ? (
         <LoadingIndicator />
@@ -170,7 +186,10 @@ function ComicActionPopup({ onClose }: PopupProps) {
           />
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Slika Naslovnice
+              Slika Naslovnice{" "}
+              {isUpdate && (
+                <span className="text-gray-400 font-normal">(opcionalno)</span>
+              )}
             </label>
             <label className="flex items-center gap-3 w-full px-4 py-2 border border-gray-300 rounded-lg cursor-pointer hover:border-green-500 transition-all">
               <span className="bg-green-500 text-white text-sm px-3 py-1 rounded-md whitespace-nowrap">
@@ -184,17 +203,16 @@ function ComicActionPopup({ onClose }: PopupProps) {
                 accept="image/*"
                 className="hidden"
                 onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    const file = e.target.files[0];
-                    setCoverPicture(file);
+                  if (e.target.files?.[0]) {
+                    setCoverPicture(e.target.files[0]);
                   }
                 }}
               />
             </label>
-            {coverPicture && (
+            {previewUrl && (
               <div className="mt-3 flex justify-center">
                 <img
-                  src={URL.createObjectURL(coverPicture)}
+                  src={previewUrl}
                   alt="Preview"
                   className="max-h-48 rounded-lg border border-gray-300 object-contain"
                 />

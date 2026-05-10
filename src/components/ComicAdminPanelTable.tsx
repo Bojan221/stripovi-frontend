@@ -4,7 +4,8 @@ import Avatar from "./core/Avatar";
 import { axiosPrivate } from "../api/axiosInstance";
 import { showToast } from "../utils/toast";
 import type { Comic } from "../types/Comic";
-
+import { useState } from "react";
+import ComicActionPopup from "./ComicActionPopup";
 const API_URL = import.meta.env.VITE_API_URL;
 
 interface ComicAdminPanelTableProps {
@@ -16,6 +17,9 @@ function ComicAdminPanelTable({
   comics,
   onRefresh,
 }: ComicAdminPanelTableProps) {
+  const [updateComic, setUpdateComic] = useState(false);
+  const [comic, setComic] = useState<Comic | null>(null);
+
   const handleDelete = async (id: string) => {
     try {
       await axiosPrivate.delete(`/api/comics/deleteComic/${id}`);
@@ -33,6 +37,11 @@ function ComicAdminPanelTable({
       </div>
     );
   }
+
+  const updateComicData = (comic: Comic) => {
+    setUpdateComic(true);
+    setComic(comic);
+  };
   return (
     <div className="mt-6">
       {/* Desktop Table */}
@@ -125,7 +134,10 @@ function ComicAdminPanelTable({
                 </td>
                 <td className="px-6 py-3 text-right">
                   <div className="flex gap-2 items-center justify-end">
-                    <button className="cursor-pointer hover:opacity-70 transition-opacity">
+                    <button
+                      className="cursor-pointer hover:opacity-70 transition-opacity"
+                      onClick={() => updateComicData(comic)}
+                    >
                       <FaEdit size={16} color="orange" />
                     </button>
                     <button
@@ -197,7 +209,10 @@ function ComicAdminPanelTable({
               )}
 
               <div className="flex gap-2 mt-2">
-                <button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-xs py-1.5 rounded-lg font-semibold flex items-center justify-center gap-1 transition-colors">
+                <button
+                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-xs py-1.5 rounded-lg font-semibold flex items-center justify-center gap-1 transition-colors"
+                  onClick={() => updateComicData(comic)}
+                >
                   <FaEdit size={12} />
                   Uredi
                 </button>
@@ -213,6 +228,13 @@ function ComicAdminPanelTable({
           </div>
         ))}
       </div>
+      {updateComic && comic && (
+        <ComicActionPopup
+          onClose={() => setUpdateComic(false)}
+          comic={comic}
+          onRefresh={onRefresh}
+        />
+      )}
     </div>
   );
 }
