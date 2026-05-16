@@ -1,9 +1,9 @@
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { format } from "date-fns";
-import Avatar from "./core/Avatar";
-import { axiosPrivate } from "../api/axiosInstance";
-import { showToast } from "../utils/toast";
-import type { Comic } from "../types/Comic";
+import Avatar from "../core/Avatar";
+import { axiosPrivate } from "../../api/axiosInstance";
+import { showToast } from "../../utils/toast";
+import type { Comic } from "../../types/Comic";
 import { useState } from "react";
 import ComicActionPopup from "./ComicActionPopup";
 const API_URL = import.meta.env.VITE_API_URL;

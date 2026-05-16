@@ -1,33 +1,32 @@
-import type { Publisher } from "../types/Publisher";
-import type { Hero } from "../types/Hero";
-import Popup from "./core/Popup";
-import CustomSelect from "./core/CustomSelect";
-import CustomMultiSelect from "./core/CustomMultiSelect";
+import type { Publisher } from "../../types/Publisher";
+import type { Hero } from "../../types/Hero";
+import Popup from "./../core/Popup";
+import CustomSelect from "./../core/CustomSelect";
+import CustomMultiSelect from "./../core/CustomMultiSelect";
 import { useState } from "react";
-import { axiosPrivate } from "../api/axiosInstance";
-import { showToast } from "../utils/toast";
+import { axiosPrivate } from "../../api/axiosInstance";
+import { showToast } from "../../utils/toast";
 interface PopupProps {
   publishers: Publisher[];
   heroes: Hero[];
   onClose: () => void;
   fetchData: () => void;
-  update?:boolean;
+  update?: boolean;
   updateData?: {
-    publisher?:string;
-    edition?:string;
-    heroesIds?:string[];
-    editionId?:string;
+    publisher?: string;
+    edition?: string;
+    heroesIds?: string[];
+    editionId?: string;
   };
-  editionId?:string;
+  editionId?: string;
 }
 function CreateEditionPopup({
   publishers,
   heroes,
   onClose,
   fetchData,
-  update=false,
-  updateData
-
+  update = false,
+  updateData,
 }: PopupProps) {
   const [editionName, setEditionName] = useState(updateData?.edition || "");
   const [publisherId, setPublisherId] = useState(updateData?.publisher || "");
@@ -67,7 +66,7 @@ function CreateEditionPopup({
     }
   };
 
-  const updateEdition = async () => { 
+  const updateEdition = async () => {
     try {
       if (!editionName.trim()) {
         return showToast("error", "Ime edicije je obavezno");
@@ -78,30 +77,37 @@ function CreateEditionPopup({
       if (heroIds.length === 0) {
         return showToast("error", "Junak edicije je obavezan");
       }
-      const editionId = updateData?.editionId
-        const editionData = {
-          name: editionName,
-          publisher: publisherId,
-          heroes: heroIds,
-        };
-      await axiosPrivate.put(`/api/editions/updateEdition/${editionId}`, editionData)
+      const editionId = updateData?.editionId;
+      const editionData = {
+        name: editionName,
+        publisher: publisherId,
+        heroes: heroIds,
+      };
+      await axiosPrivate.put(
+        `/api/editions/updateEdition/${editionId}`,
+        editionData,
+      );
 
-       showToast("success", "Edicija je uspješno izmijenjena");
+      showToast("success", "Edicija je uspješno izmijenjena");
       setEditionName("");
       setPublisherId("");
       setHeroIds([]);
       fetchData();
       onClose();
-    }catch (err:any) { 
-      showToast("error", err?.response?.data?.message || "Došlo je do greške prilikom ažuriranja edicije.")
+    } catch (err: any) {
+      showToast(
+        "error",
+        err?.response?.data?.message ||
+          "Došlo je do greške prilikom ažuriranja edicije.",
+      );
     }
-  }
+  };
   return (
     <Popup
       onClose={onClose}
-      title={update? "Uredi Ediciju":"Kreiraj Ediciju"}
-      buttonText={update? "Ažuriraj":"Kreiraj"}
-      onConfirm={update?()=> updateEdition() :() => createEdition()}
+      title={update ? "Uredi Ediciju" : "Kreiraj Ediciju"}
+      buttonText={update ? "Ažuriraj" : "Kreiraj"}
+      onConfirm={update ? () => updateEdition() : () => createEdition()}
     >
       <div className="px-6 py-6 space-y-5">
         <div>

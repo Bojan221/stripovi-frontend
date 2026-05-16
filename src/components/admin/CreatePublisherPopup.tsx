@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { axiosPrivate } from "../api/axiosInstance";
-import { showToast } from "../utils/toast";
-import Popup from "./core/Popup";
-import type { Publisher } from "../types/Publisher";
+import { axiosPrivate } from "../../api/axiosInstance";
+import { showToast } from "../../utils/toast";
+import Popup from "./../core/Popup";
+import type { Publisher } from "../../types/Publisher";
 interface PopupProps {
   onClose: () => void;
   fetch: () => void;
@@ -35,15 +35,18 @@ function CreatePublisherPopup({
         country,
       };
       await axiosPrivate.post(endpoint, publisher);
-        fetch();
-        onClose();
-        const message = update
-          ? "Uspješno ažuriran izdavač"
-          : "Uspješno kreiran izdavač";
-        return showToast("success", message);
-      
+      fetch();
+      onClose();
+      const message = update
+        ? "Uspješno ažuriran izdavač"
+        : "Uspješno kreiran izdavač";
+      return showToast("success", message);
     } catch (err: any) {
-      showToast("error", err.response?.data?.message || "Greška pri kreiranju ili ažuriranju izdavača");
+      showToast(
+        "error",
+        err.response?.data?.message ||
+          "Greška pri kreiranju ili ažuriranju izdavača",
+      );
     }
   };
 

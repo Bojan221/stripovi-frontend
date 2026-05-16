@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import Popup from "./core/Popup";
-import CustomSelect from "./core/CustomSelect";
-import { axiosPrivate } from "../api/axiosInstance";
-import { showToast } from "../utils/toast";
-import type { Hero } from "../types/Hero";
-import type { Publisher } from "../types/Publisher";
-import type { Edition } from "../types/Edition";
-import type { Comic } from "../types/Comic";
-import LoadingIndicator from "./core/LoadingComponent";
+import Popup from "../core/Popup";
+import CustomSelect from "../core/CustomSelect";
+import { axiosPrivate } from "../../api/axiosInstance";
+import { showToast } from "../../utils/toast";
+import type { Hero } from "../../types/Hero";
+import type { Publisher } from "../../types/Publisher";
+import type { Edition } from "../../types/Edition";
+import type { Comic } from "../../types/Comic";
+import LoadingIndicator from "../core/LoadingComponent";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -28,9 +28,7 @@ function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
   const [publisherId, setPublisherId] = useState<string>(
     comic?.edition?.publisher?._id || "",
   );
-  const [editionId, setEditionId] = useState<string>(
-    comic?.edition?._id || "",
-  );
+  const [editionId, setEditionId] = useState<string>(comic?.edition?._id || "");
   const [title, setTitle] = useState(comic?.title || "");
   const [issueNumber, setIssueNumber] = useState(comic?.issueNumber || "");
   const [coverPicture, setCoverPicture] = useState<File | null>(null);
@@ -118,10 +116,7 @@ function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
       onRefresh?.();
       onClose();
     } catch (err: any) {
-      showToast(
-        "error",
-        err?.response?.data?.message || "Došlo je do greške.",
-      );
+      showToast("error", err?.response?.data?.message || "Došlo je do greške.");
     }
   };
 

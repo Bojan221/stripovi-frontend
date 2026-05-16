@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { axiosPrivate } from "../api/axiosInstance";
-import type { Hero } from "../types/Hero";
-import LoadingComponent from "./core/LoadingComponent";
+import { axiosPrivate } from "../../api/axiosInstance";
+import type { Hero } from "../../types/Hero";
+import LoadingComponent from "../core/LoadingComponent";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { format } from "date-fns";
-import Avatar from "./core/Avatar";
-import { showToast } from "../utils/toast";
+import Avatar from "../core/Avatar";
+import { showToast } from "../../utils/toast";
 
 interface HeroesTableProps {
   refresh?: number;

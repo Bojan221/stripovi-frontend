@@ -1,19 +1,19 @@
 import { useState } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { format } from "date-fns";
-import Avatar from "./core/Avatar";
-import { showToast } from "../utils/toast";
-import { axiosPrivate } from "../api/axiosInstance";
-import type { Edition } from "../types/Edition";
+import Avatar from "../core/Avatar";
+import { showToast } from "../../utils/toast";
+import { axiosPrivate } from "../../api/axiosInstance";
+import type { Edition } from "../../types/Edition";
 import CreateEditionPopup from "./CreateEditionPopup";
-import type { Publisher } from "../types/Publisher";
-import type { Hero } from "../types/Hero";
+import type { Publisher } from "../../types/Publisher";
+import type { Hero } from "../../types/Hero";
 
 interface EditionsTableProps {
   editions: Edition[];
   onRefresh?: () => void;
-  publishers?:Publisher[];
-  heroes?:Hero[];
+  publishers?: Publisher[];
+  heroes?: Hero[];
 }
 
 interface HeroModalState {
@@ -21,7 +21,12 @@ interface HeroModalState {
   heroes: Array<{ _id: string; name: string }>;
 }
 
-function EditionsTable({ editions, onRefresh, publishers, heroes }: EditionsTableProps) {
+function EditionsTable({
+  editions,
+  onRefresh,
+  publishers,
+  heroes,
+}: EditionsTableProps) {
   const [heroModal, setHeroModal] = useState<HeroModalState>({
     isOpen: false,
     heroes: [],
@@ -41,13 +46,13 @@ function EditionsTable({ editions, onRefresh, publishers, heroes }: EditionsTabl
     });
   };
 
-  const [showUpdatePopup,setShowUpdatePopup] = useState(false)
+  const [showUpdatePopup, setShowUpdatePopup] = useState(false);
   const [updateData, setUpdateData] = useState<{
-  edition?: string;
-  heroesIds?: string[];
-  publisher?: string;
-  editionId?:string;
-}>({});
+    edition?: string;
+    heroesIds?: string[];
+    publisher?: string;
+    editionId?: string;
+  }>({});
   const handleDelete = async (id: string) => {
     try {
       await axiosPrivate.delete(`/api/editions/deleteEdition/${id}`);
@@ -95,10 +100,10 @@ function EditionsTable({ editions, onRefresh, publishers, heroes }: EditionsTabl
           </thead>
           <tbody>
             {editions.map((edition: Edition, idx) => {
-              const heroesIds: string[] = []
-              edition.heroes?.map((hero: any) => { 
-                heroesIds.push(hero._id)
-              })
+              const heroesIds: string[] = [];
+              edition.heroes?.map((hero: any) => {
+                heroesIds.push(hero._id);
+              });
               return (
                 <tr
                   key={edition._id}
@@ -155,13 +160,16 @@ function EditionsTable({ editions, onRefresh, publishers, heroes }: EditionsTabl
                     <div className="flex gap-2 items-center justify-end">
                       <button
                         className="cursor-pointer hover:opacity-70 transition-opacity"
-                        onClick={() => {setUpdateData(prev => ({
-                            ...prev, 
+                        onClick={() => {
+                          setUpdateData((prev) => ({
+                            ...prev,
                             edition: edition.name,
                             publisher: edition.publisher._id,
-                            heroesIds:heroesIds,
-                            editionId:edition._id
-                          })); setShowUpdatePopup(true)}}
+                            heroesIds: heroesIds,
+                            editionId: edition._id,
+                          }));
+                          setShowUpdatePopup(true);
+                        }}
                       >
                         <FaEdit size={16} color="orange" />
                       </button>
@@ -183,10 +191,10 @@ function EditionsTable({ editions, onRefresh, publishers, heroes }: EditionsTabl
       {/* Mobile */}
       <div className="md:hidden bg-white rounded-lg shadow-md flex flex-col gap-2">
         {editions?.map((edition: Edition) => {
-              const heroesIds: string[] = []
-              edition.heroes?.map((hero: any) => { 
-                heroesIds.push(hero._id)
-              })
+          const heroesIds: string[] = [];
+          edition.heroes?.map((hero: any) => {
+            heroesIds.push(hero._id);
+          });
           return (
             <div
               key={edition._id}
@@ -234,18 +242,26 @@ function EditionsTable({ editions, onRefresh, publishers, heroes }: EditionsTabl
                 </div>
               </div>
               <div className="flex gap-2 p-4 mt-auto">
-                <button className="text-sm flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors" 
-                onClick={() => {setUpdateData(prev => ({
-                  ...prev, 
-                  edition: edition.name,
-                  publisher: edition.publisher._id,
-                  heroesIds:heroesIds,
-                  editionId:edition._id
-                          })); setShowUpdatePopup(true)}}>
+                <button
+                  className="text-sm flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
+                  onClick={() => {
+                    setUpdateData((prev) => ({
+                      ...prev,
+                      edition: edition.name,
+                      publisher: edition.publisher._id,
+                      heroesIds: heroesIds,
+                      editionId: edition._id,
+                    }));
+                    setShowUpdatePopup(true);
+                  }}
+                >
                   <FaEdit size={16} />
                   Uredi
                 </button>
-                <button className="text-sm flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors" onClick={() => handleDelete(edition._id)}>
+                <button
+                  className="text-sm flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors"
+                  onClick={() => handleDelete(edition._id)}
+                >
                   <FaTrashAlt size={16} />
                   Briši
                 </button>
@@ -291,14 +307,14 @@ function EditionsTable({ editions, onRefresh, publishers, heroes }: EditionsTabl
         </div>
       )}
       {showUpdatePopup && updateData && (
-        <CreateEditionPopup 
-          publishers={publishers || []} 
-          heroes={heroes || []} 
-          onClose={()=> setShowUpdatePopup(false)} 
-          fetchData={() => onRefresh?.()} 
+        <CreateEditionPopup
+          publishers={publishers || []}
+          heroes={heroes || []}
+          onClose={() => setShowUpdatePopup(false)}
+          fetchData={() => onRefresh?.()}
           update={true}
           updateData={updateData || {}}
-          />
+        />
       )}
     </div>
   );

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import CreateHeroPopup from "../../components/CreateHeroPopup";
-import HeroesTable from "../../components/HeroesTable";
+import CreateHeroPopup from "../../components/admin/CreateHeroPopup";
+import HeroesTable from "../../components/admin/HeroesTable";
 import type { Hero } from "../../types/Hero";
 
 function CharactersPage() {

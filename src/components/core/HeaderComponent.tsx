@@ -1,13 +1,13 @@
 import { useSelector } from "react-redux";
-import type { RootState } from "../store/store";
+import type { RootState } from "../../store/store";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { axiosPrivate } from "../api/axiosInstance";
+import { axiosPrivate } from "../../api/axiosInstance";
 import { useDispatch } from "react-redux";
-import { logoutUser } from "../store/userSlice";
-import { showToast } from "../utils/toast";
+import { logoutUser } from "../../store/userSlice";
+import { showToast } from "../../utils/toast";
 import { HiBars3, HiXMark } from "react-icons/hi2";
-import Avatar from "./core/Avatar";
+import Avatar from "./Avatar";
 
 function HeaderComponent() {
   const { user } = useSelector((state: RootState) => state.user);

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import type { Hero } from "../types/Hero";
-import Popup from "./core/Popup";
-import { axiosPrivate } from "../api/axiosInstance";
-import { showToast } from "../utils/toast";
+import type { Hero } from "../../types/Hero";
+import Popup from "../core/Popup";
+import { axiosPrivate } from "../../api/axiosInstance";
+import { showToast } from "../../utils/toast";
 interface PopupProps {
   onClose: () => void;
   fetch: () => void;
@@ -39,16 +39,12 @@ function CreateHeroPopup({
         );
         showToast("success", "Junak uspješno ažuriran");
       } else {
-        await axiosPrivate.post(
-          "/api/heroes/createHero",
-          heroData,
-        );
+        await axiosPrivate.post("/api/heroes/createHero", heroData);
         showToast("success", "Junak uspješno kreiran");
       }
 
       fetch();
       onClose();
-
     } catch (err: any) {
       showToast("error", err.response?.data?.message || "Greška pri spremanju");
     }

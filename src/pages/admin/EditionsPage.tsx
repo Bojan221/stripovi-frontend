@@ -3,8 +3,8 @@ import type { Publisher } from "../../types/Publisher";
 import type { Hero } from "../../types/Hero";
 import type { Edition } from "../../types/Edition";
 import { axiosPrivate } from "../../api/axiosInstance";
-import CreateEditionPopup from "../../components/CreateEditionPopup";
-import EditionsTable from "../../components/EditionsTable";
+import CreateEditionPopup from "../../components/admin/CreateEditionPopup";
+import EditionsTable from "../../components/admin/EditionsTable";
 import { showToast } from "../../utils/toast";
 import PublisherFilter from "../../components/core/PublisherFilter";
 import HeroFilter from "../../components/core/HeroFilter";
@@ -99,7 +99,12 @@ function EditionsPage() {
       )}
 
       <div>
-        <EditionsTable editions={editions} onRefresh={() => fetchEditions()} publishers={publishers || []} heroes={heroes || []} />
+        <EditionsTable
+          editions={editions}
+          onRefresh={() => fetchEditions()}
+          publishers={publishers || []}
+          heroes={heroes || []}
+        />
         <div className="flex max-md:flex-col max-md:gap-2 items-center justify-between pt-3 px-3">
           <div>
             <PaginationRounded totalPages={totalPages} />

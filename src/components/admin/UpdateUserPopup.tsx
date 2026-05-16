@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { axiosPrivate } from "../api/axiosInstance";
-import LoadingIndicator from "./core/LoadingComponent";
-import { showToast } from "../utils/toast";
+import { axiosPrivate } from "../../api/axiosInstance";
+import LoadingIndicator from "../core/LoadingComponent";
+import { showToast } from "../../utils/toast";
 import { useSelector } from "react-redux";
-import type { RootState } from "../store/store";
-import Popup from "./core/Popup";
+import type { RootState } from "../../store/store";
+import Popup from "../core/Popup";
 interface PopupProps {
   onClose: () => void;
   userId: string;

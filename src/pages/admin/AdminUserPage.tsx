@@ -5,7 +5,7 @@ import type { User } from "../../types/User";
 import { showToast } from "../../utils/toast";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { FaRegUser, FaEdit, FaTrashAlt } from "react-icons/fa";
-import UpdateUserPopup from "../../components/UpdateUserPopup";
+import UpdateUserPopup from "../../components/admin/UpdateUserPopup";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import { AiOutlineStop } from "react-icons/ai";

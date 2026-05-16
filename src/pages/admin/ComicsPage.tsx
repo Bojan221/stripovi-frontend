@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import ComicActionPopup from "../../components/ComicActionPopup";
+import ComicActionPopup from "../../components/admin/ComicActionPopup";
 import { axiosPrivate } from "../../api/axiosInstance";
 import type { Hero } from "../../types/Hero";
 import type { Publisher } from "../../types/Publisher";
@@ -8,7 +8,7 @@ import type { Edition } from "../../types/Edition";
 import type { Comic } from "../../types/Comic";
 import { showToast } from "../../utils/toast";
 import LoadingIndicator from "../../components/core/LoadingComponent";
-import ComicAdminPanelTable from "../../components/ComicAdminPanelTable";
+import ComicAdminPanelTable from "../../components/admin/ComicAdminPanelTable";
 import PaginationRounded from "../../components/core/Pagination";
 import PublisherFilter from "../../components/core/PublisherFilter";
 import HeroFilter from "../../components/core/HeroFilter";

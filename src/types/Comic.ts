@@ -5,7 +5,7 @@ export interface Comic {
   _id: string;
   title: string;
   coverImage: string;
-  issueNumber: string;
+  issueNumber: number;
   createdAt: string;
   updatedAt: string;
   createdBy: User;

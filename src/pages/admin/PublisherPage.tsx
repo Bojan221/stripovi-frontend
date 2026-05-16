@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import CreatePublisherPopup from "../../components/CreatePublisherPopup";
+import CreatePublisherPopup from "../../components/admin/CreatePublisherPopup";
 import { axiosPrivate } from "../../api/axiosInstance";
 import { showToast } from "../../utils/toast";
 import type { Publisher } from "../../types/Publisher";
