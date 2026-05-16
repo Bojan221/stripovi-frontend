@@ -7,7 +7,6 @@ import { useDispatch } from "react-redux";
 import { logoutUser } from "../store/userSlice";
 import { showToast } from "../utils/toast";
 import { HiBars3, HiXMark } from "react-icons/hi2";
-import { IoClose } from "react-icons/io5";
 import Avatar from "./core/Avatar";
 
 function HeaderComponent() {
@@ -16,6 +15,7 @@ function HeaderComponent() {
   const [showOptions, setShowOptions] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const navigator = useNavigate();
+
   const handleLogout = async () => {
     try {
       await axiosPrivate.post(
@@ -23,247 +23,234 @@ function HeaderComponent() {
         {},
         { withCredentials: true },
       );
-    } catch (err) {
-      showToast("error", "Greska pri odjavljivanju");
+    } catch {
+      showToast("error", "Greška pri odjavljivanju");
     } finally {
       dispatch(logoutUser());
-      showToast("success", "Uspjesno ste se odjavili");
+      showToast("success", "Uspješno ste se odjavili");
     }
   };
 
   const navItems = [
-    { label: "POČETNA", path: "/" },
-    { label: "MOJA KOLEKCIJA", path: "/my-collection" },
-    { label: "LISTA OMILJENIH", path: "/my-list" },
-    { label: "STATISTIKA", path: "/statistic" },
-    { label: "ADMIN PANEL", path: "/admin" },
+    { label: "Početna", path: "/" },
+    { label: "Stripovi", path: "/comics" },
+    { label: "Moja Kolekcija", path: "/my-collection" },
+    { label: "Lista Omiljenih", path: "/my-list" },
+    { label: "Statistika", path: "/statistic" },
+    { label: "Admin Panel", path: "/admin" },
   ];
 
   return (
-    <div className="w-full border-b border-blue-900 shadow-md shadow-black bg-slate-700 sticky top-0 z-40">
-      <div className="flex justify-between items-center py-3 px-5">
-        {/* Logo Section */}
-        <NavLink
-          to="/"
-          className="flex items-center gap-2 md:hidden hover:opacity-80 transition-opacity"
-        >
-          {/* SVG Comic Icon */}
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 40 40"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-8 h-8"
-          >
-            {/* Left Comic Panel */}
-            <rect
-              x="2"
-              y="4"
-              width="15"
-              height="15"
-              rx="1"
-              fill="#3B82F6"
-              stroke="white"
-              strokeWidth="2"
-            />
-            <circle cx="6" cy="8" r="2" fill="white" />
-            <rect x="6" y="12" width="6" height="2" fill="white" />
+    <>
+      <header className="w-full bg-gray-950 sticky top-0 z-40 border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-16">
+          {/* Logo */}
+          <NavLink to="/" className="flex items-center gap-2 group shrink-0">
+            <div className="w-7 h-7 bg-orange-500 rounded flex items-center justify-center group-hover:bg-orange-400 transition-colors">
+              <span className="text-white font-black text-xs leading-none">
+                S
+              </span>
+            </div>
+            <span className="text-white font-black text-lg tracking-tight">
+              STRIP<span className="text-orange-500">OVI</span>
+            </span>
+          </NavLink>
 
-            {/* Right Comic Panel */}
-            <rect
-              x="23"
-              y="4"
-              width="15"
-              height="15"
-              rx="1"
-              fill="#F59E0B"
-              stroke="white"
-              strokeWidth="2"
-            />
-            <circle cx="27" cy="8" r="2" fill="white" />
-            <rect x="27" cy="12" width="6" height="2" fill="white" />
-
-            {/* Bottom Comic Panel */}
-            <rect
-              x="2"
-              y="21"
-              width="36"
-              height="15"
-              rx="1"
-              fill="#8B5CF6"
-              stroke="white"
-              strokeWidth="2"
-            />
-            <circle cx="6" cy="25" r="2" fill="white" />
-            <rect x="6" cy="29" width="28" height="2" fill="white" />
-
-            {/* Comic Boom Star */}
-            <polygon
-              points="37,12 39,18 46,19 41,24 42,31 37,27 32,31 33,24 28,19 35,18"
-              fill="#EF4444"
-              opacity="0.8"
-            />
-          </svg>
-
-          {/* Text */}
-          <span className="block text-white font-bold text-sm sm:text-base tracking-wide">
-            STRIPOVI
-          </span>
-        </NavLink>
-
-        {/* Desktop Navigation */}
-        <ul className="hidden md:flex gap-4 md:gap-6 items-center bg-white px-4 py-2 rounded-lg shadow-sm">
-          {navItems.map((item) => (
-            <li key={item.path}>
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {navItems.map((item) => (
               <NavLink
+                key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `text-gray-700 font-medium hover:text-blue-600 transition-colors duration-200 ${
+                  `relative px-4 py-2 text-sm font-semibold transition-colors duration-150 rounded-lg ${
                     isActive
-                      ? "text-blue-600 border-b-2 border-blue-600 pb-1"
-                      : ""
+                      ? "text-orange-400"
+                      : "text-white/60 hover:text-white"
                   }`
                 }
               >
-                {item.label}
+                {({ isActive }) => (
+                  <>
+                    {item.label}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-orange-500 rounded-full" />
+                    )}
+                  </>
+                )}
               </NavLink>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </nav>
 
-        {/* User Profile & Hamburger */}
-        <div className="flex items-center gap-4 ml-auto md:ml-0">
-          {/* User Avatar */}
-          <div className="relative hidden md:block">
-            <div
-              onClick={() => setShowOptions(!showOptions)}
-              className="cursor-pointer"
-            >
-              <Avatar
-                firstName={user?.firstName || ""}
-                lastName={user?.lastName || ""}
-                profilePicture={user?.profilePicture || ""}
-                size="medium"
-              />
+          {/* Right: avatar + hamburger */}
+          <div className="flex items-center gap-3 ">
+            {/* Desktop avatar */}
+            <div className="relative hidden md:block">
+              <button
+                onClick={() => setShowOptions(!showOptions)}
+                className="flex cursor-pointer items-center gap-2.5 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors group"
+              >
+                <Avatar
+                  firstName={user?.firstName || ""}
+                  lastName={user?.lastName || ""}
+                  profilePicture={user?.profilePicture || ""}
+                  size="small"
+                />
+                <div className="text-left hidden lg:block">
+                  <p className="text-white text-sm font-semibold leading-none">
+                    {user?.firstName} {user?.lastName}
+                  </p>
+                  <p className="text-white/40 text-xs mt-0.5 leading-none">
+                    {user?.email}
+                  </p>
+                </div>
+                <svg
+                  className={`w-3.5 h-3.5 text-white/40 transition-transform ${showOptions ? "rotate-180" : ""}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+
+              {showOptions && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowOptions(false)}
+                  />
+                  <div className="absolute right-0 mt-2 w-48 bg-gray-900 border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden">
+                    <button
+                      className="w-full text-left px-4 py-3 text-sm font-semibold cursor-pointer text-white/80 hover:text-white hover:bg-white/5 transition-colors"
+                      onClick={() => {
+                        navigator("/my-account");
+                        setShowOptions(false);
+                      }}
+                    >
+                      Moj Profil
+                    </button>
+                    <div className="h-px bg-white/10" />
+                    <button
+                      className="w-full text-left px-4 py-3 text-sm font-semibold cursor-pointer text-red-400 hover:text-red-300 hover:bg-white/5 transition-colors"
+                      onClick={() => {
+                        handleLogout();
+                        setShowOptions(false);
+                      }}
+                    >
+                      Odjava
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
 
-            {showOptions && (
-              <div className="absolute right-0 mt-2 shadow-lg w-44 rounded-md bg-white flex flex-col z-50">
-                <button
-                  className="text-md font-semibold hover:bg-slate-200 transition-all duration-200 px-4 py-2 text-left"
-                  onClick={() => {
-                    navigator("/my-account");
-                    setShowOptions(false);
-                  }}
-                >
-                  Moj Profil
-                </button>
-                <button
-                  className="text-md font-semibold hover:bg-slate-200 transition-all duration-200 px-4 py-2 text-left"
-                  onClick={handleLogout}
-                >
-                  Odjava
-                </button>
-              </div>
-            )}
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setShowMobileMenu(true)}
+              className="md:hidden text-white/70 hover:text-white transition-colors p-1"
+            >
+              <HiBars3 size={26} />
+            </button>
           </div>
-
-          {/* Hamburger Menu */}
-          <button
-            onClick={() => setShowMobileMenu(!showMobileMenu)}
-            className="md:hidden text-white text-2xl"
-          >
-            {showMobileMenu ? <HiXMark /> : <HiBars3 size={32} />}
-          </button>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Slide Menu */}
+      {/* Mobile overlay */}
       <div
-        className={`fixed inset-0 bg-[#00000096]  transition-opacity duration-300 ease-in-out md:hidden ${
+        className={`fixed inset-0 bg-black/70 backdrop-blur-sm z-50 transition-opacity duration-300 md:hidden ${
           showMobileMenu ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setShowMobileMenu(false)}
       />
 
+      {/* Mobile drawer */}
       <div
-        className={`fixed right-0 top-0 bottom-0 w-72 bg-slate-800 shadow-lg transform transition-transform duration-300 ease-in-out z-40 ${
+        className={`fixed right-0 top-0 bottom-0 w-72 bg-gray-950 border-l border-white/10 z-50 flex flex-col transform transition-transform duration-300 ease-in-out md:hidden ${
           showMobileMenu ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* User Info Section at Top */}
-        <div className="bg-blue-400 px-5 py-6 flex items-center gap-4 relative">
-          <div
-            onClick={() => {
-              navigator("/my-account");
-              setShowMobileMenu(false);
-            }}
+        {/* Drawer header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+          <span className="text-white font-black tracking-tight">
+            STRIP<span className="text-orange-500">OVI</span>
+          </span>
+          <button
+            onClick={() => setShowMobileMenu(false)}
+            className="text-white/50 hover:text-white transition-colors"
           >
-            <Avatar
-              firstName={user?.firstName || ""}
-              lastName={user?.lastName || ""}
-              profilePicture={user?.profilePicture || ""}
-              size="medium"
-              className="bg-white! text-blue-400!"
-            />
-          </div>
-          <div
-            className="text-white"
-            onClick={() => {
-              navigator("/my-account");
-              setShowMobileMenu(false);
-            }}
-          >
-            <p className="font-bold">
-              {user ? `${user.firstName} ${user.lastName}` : "Korisnik"}
-            </p>
-            <p className="text-sm text-blue-100">{user?.email}</p>
-          </div>
-          <div
-            className="absolute top-1 right-2  text-white font-semibold"
-            onClick={(e) => {
-              e.preventDefault;
-              setShowMobileMenu(false);
-            }}
-          >
-            <IoClose size={24} />
-          </div>
+            <HiXMark size={22} />
+          </button>
         </div>
 
-        {/* Navigation List */}
-        <ul className="flex flex-col mt-4 px-2">
-          {navItems.map((item) => (
-            <li key={item.path}>
-              <NavLink
-                to={item.path}
-                onClick={() => setShowMobileMenu(false)}
-                className={({ isActive }) =>
-                  `block px-4 py-3 rounded-md font-medium transition-colors duration-200 ${
-                    isActive
-                      ? "bg-blue-500 text-white"
-                      : "text-gray-200 hover:bg-slate-700 hover:text-white"
-                  }`
-                }
-              >
-                {item.label}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-
-        {/* Logout Button */}
+        {/* User info */}
         <button
+          className="flex items-center gap-3 px-5 py-4 border-b border-white/10 hover:bg-white/5 transition-colors text-left"
           onClick={() => {
-            handleLogout();
+            navigator("/my-account");
             setShowMobileMenu(false);
           }}
-          className="m-4 w-[calc(100%-2rem)] bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200"
         >
-          Odjava
+          <Avatar
+            firstName={user?.firstName || ""}
+            lastName={user?.lastName || ""}
+            profilePicture={user?.profilePicture || ""}
+            size="medium"
+          />
+          <div>
+            <p className="text-white font-bold text-sm">
+              {user ? `${user.firstName} ${user.lastName}` : "Korisnik"}
+            </p>
+            <p className="text-white/40 text-xs mt-0.5">{user?.email}</p>
+          </div>
         </button>
+
+        {/* Nav items */}
+        <nav className="flex flex-col px-3 py-3 flex-1">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onClick={() => setShowMobileMenu(false)}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-colors ${
+                  isActive
+                    ? "bg-orange-500/15 text-orange-400"
+                    : "text-white/60 hover:text-white hover:bg-white/5"
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full shrink-0 ${isActive ? "bg-orange-500" : "bg-white/20"}`}
+                  />
+                  {item.label}
+                </>
+              )}
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* Logout */}
+        <div className="px-3 pb-6">
+          <button
+            onClick={() => {
+              handleLogout();
+              setShowMobileMenu(false);
+            }}
+            className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 font-bold py-3 px-4 rounded-xl transition-colors text-sm"
+          >
+            Odjava
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

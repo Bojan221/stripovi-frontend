@@ -24,7 +24,7 @@ function EditionFilter({ editions }: { editions: Edition[] }) {
   };
   const resetHero = () => {
     const params = Object.fromEntries(searchParams);
-    delete params.hero;
+    delete params.edition;
     setSearchParams(params);
     setEditionId(null);
     setEditionName(null);

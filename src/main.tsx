@@ -15,6 +15,7 @@ import PublisherPage from "./pages/admin/PublisherPage.tsx";
 import EditionsPage from "./pages/admin/EditionsPage.tsx";
 import CharactersPage from "./pages/admin/CharactersPage.tsx";
 import ComicsPage from "./pages/admin/ComicsPage.tsx";
+import PublicComicsPage from "./pages/ComicsPage.tsx";
 import ProtectedRoute from "./routes/ProtectedRoute.tsx";
 import AdminRoute from "./routes/AdminRoute.tsx";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <HomePage />,
+      },
+      {
+        path: "/comics",
+        element: <PublicComicsPage />,
       },
       {
         path: "/my-collection",
