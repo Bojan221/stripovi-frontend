@@ -7,8 +7,6 @@ import type { Comic } from "../../types/Comic";
 import { useState } from "react";
 import ComicActionPopup from "./ComicActionPopup";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 interface ComicAdminPanelTableProps {
   comics: Comic[];
   onRefresh?: () => void;
@@ -59,7 +57,7 @@ function ComicAdminPanelTable({ comics, onRefresh }: ComicAdminPanelTableProps) 
                 <td className="px-6 py-3">
                   <div className="flex items-center gap-3">
                     <img
-                      src={`${API_URL}/uploads/comics/${comic.coverImage}`}
+                      src={comic.coverImage}
                       alt={comic.title}
                       className="w-9 h-13 object-cover rounded-lg shadow-sm"
                     />
@@ -137,7 +135,7 @@ function ComicAdminPanelTable({ comics, onRefresh }: ComicAdminPanelTableProps) 
           >
             <div className="relative">
               <img
-                src={`${API_URL}/uploads/comics/${comic.coverImage}`}
+                src={comic.coverImage}
                 alt={comic.title}
                 className="w-full h-48 object-cover"
               />

@@ -5,7 +5,6 @@ interface AvatarProps {
   size?: "small" | "xs" | "medium" | "large" | "xlarge";
   className?: string;
 }
-const API_URL = import.meta.env.VITE_API_URL;
 function Avatar({
   firstName,
   lastName,
@@ -13,11 +12,7 @@ function Avatar({
   size = "medium",
   className = "",
 }: AvatarProps) {
-  const imageUrl = profilePicture?.startsWith("blob:")
-    ? profilePicture
-    : profilePicture
-      ? `${API_URL}/${profilePicture}`
-      : undefined;
+  const imageUrl = profilePicture || undefined;
   return (
     <div>
       {imageUrl ? (

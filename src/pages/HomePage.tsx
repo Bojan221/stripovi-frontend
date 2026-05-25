@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import heroBg from "../assets/images/herosection.png";
-import { axiosPublic } from "../api/axiosInstance";
+import { axiosPrivate } from "../api/axiosInstance";
 import type { Hero } from "../types/Hero";
 import { IoLibrary } from "react-icons/io5";
 import { FaStar } from "react-icons/fa";
@@ -11,7 +11,7 @@ function HomePage() {
   const [heroes, setHeroes] = useState<Hero[]>([]);
 
   useEffect(() => {
-    axiosPublic
+    axiosPrivate
       .get("/api/heroes/getAllHeroes")
       .then((res) => setHeroes(res.data.heroes ?? []))
       .catch(() => {});

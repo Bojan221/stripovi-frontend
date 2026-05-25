@@ -1,12 +1,11 @@
 import type { Comic } from "../../types/Comic";
-const API_URL = import.meta.env.VITE_API_URL;
 
 function ComicCard({ comic }: { comic: Comic }) {
   return (
     <div className="group flex flex-col rounded-xl overflow-hidden bg-white border border-gray-100 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1 cursor-pointer">
       <div className="relative aspect-2/3 overflow-hidden bg-gray-200">
         <img
-          src={`${API_URL}/uploads/comics/${comic.coverImage}`}
+          src={comic.coverImage}
           alt={comic.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />

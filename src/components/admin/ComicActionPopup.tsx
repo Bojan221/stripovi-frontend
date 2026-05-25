@@ -10,8 +10,6 @@ import type { Comic } from "../../types/Comic";
 import LoadingIndicator from "../core/LoadingComponent";
 import { IoImageOutline } from "react-icons/io5";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 interface PopupProps {
   onClose: () => void;
   comic?: Comic;
@@ -122,7 +120,7 @@ function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
   const previewUrl = coverPicture
     ? URL.createObjectURL(coverPicture)
     : comic?.coverImage
-      ? `${API_URL}/uploads/comics/${comic.coverImage}`
+      ? comic.coverImage
       : null;
 
   return (
