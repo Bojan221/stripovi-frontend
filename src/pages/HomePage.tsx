@@ -1,6 +1,24 @@
-﻿import heroBg from "../assets/images/herosection.png";
+import { useEffect, useState } from "react";
+import heroBg from "../assets/images/herosection.png";
+import { axiosPublic } from "../api/axiosInstance";
+import type { Hero } from "../types/Hero";
+import { IoLibrary } from "react-icons/io5";
+import { FaStar } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
+
 
 function HomePage() {
+  const [heroes, setHeroes] = useState<Hero[]>([]);
+
+  useEffect(() => {
+    axiosPublic
+      .get("/api/heroes/getAllHeroes")
+      .then((res) => setHeroes(res.data.heroes ?? []))
+      .catch(() => {});
+  }, []);
+
+  const tickerItems = heroes.length > 0 ? [...heroes, ...heroes] : [];
+
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Top accent bar */}
@@ -76,26 +94,29 @@ function HomePage() {
           <div className="absolute bottom-0 left-0 right-0 h-16 bg-linear-to-t from-gray-950 to-transparent pointer-events-none" />
         </div>
 
-        {/* Dark band hero names */}
-        <div className="bg-gray-950 py-5 px-6">
-          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center md:justify-between gap-4">
-            {[
-              "Zagor",
-              "Dylan Dog",
-              "Tex",
-              "Martin Mystere",
-              "Mister No",
-              "Blek",
-              "Dampyr",
-            ].map((name) => (
-              <span
-                key={name}
-                className="text-white/40 hover:text-orange-400 transition-colors text-xs font-bold uppercase tracking-[0.2em] cursor-pointer"
-              >
-                {name}
-              </span>
-            ))}
-          </div>
+        {/* Scrolling ticker band */}
+        <div className="bg-gray-950 py-5 overflow-hidden">
+          {tickerItems.length > 0 ? (
+            <div
+              className="flex whitespace-nowrap"
+              style={{ animation: "ticker-ltr 25s linear infinite" }}
+            >
+              {tickerItems.map((hero, i) => (
+                <span
+                  key={`${hero._id}-${i}`}
+                  className="text-white/40 hover:text-orange-400 transition-colors text-xs font-bold uppercase tracking-[0.2em] cursor-pointer px-6 shrink-0"
+                >
+                  {hero.name}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <div className="max-w-7xl mx-auto px-6 flex items-center justify-center gap-8">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="h-3 w-20 bg-white/10 rounded-full animate-pulse" />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -117,17 +138,17 @@ function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                icon: "📚",
+                icon: <IoLibrary color="red"/>,
                 title: "Biblioteka",
                 desc: "Pregledaj kompletnu kolekciju Bonelli stripova sortirano po seriji, heroju ili ediciji.",
               },
               {
-                icon: "⭐",
+                icon: <FaStar color="yellow"/>,
                 title: "Kolekcija",
                 desc: "Dodaj stripove u svoju osobnu kolekciju i prati koje primjerke posjedujes.",
               },
               {
-                icon: "🔍",
+                icon: <FaSearch />,
                 title: "Pretraga",
                 desc: "Pronadji bilo koji strip po naslovu, heroju, izdavacu ili broju izdanja.",
               },

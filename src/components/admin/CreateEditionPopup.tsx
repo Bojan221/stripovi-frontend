@@ -6,6 +6,7 @@ import CustomMultiSelect from "./../core/CustomMultiSelect";
 import { useState } from "react";
 import { axiosPrivate } from "../../api/axiosInstance";
 import { showToast } from "../../utils/toast";
+
 interface PopupProps {
   publishers: Publisher[];
   heroes: Hero[];
@@ -20,105 +21,72 @@ interface PopupProps {
   };
   editionId?: string;
 }
-function CreateEditionPopup({
-  publishers,
-  heroes,
-  onClose,
-  fetchData,
-  update = false,
-  updateData,
-}: PopupProps) {
+
+const inputClass =
+  "w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white transition-all placeholder:text-gray-400 text-gray-900";
+const labelClass = "block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2";
+
+function CreateEditionPopup({ publishers, heroes, onClose, fetchData, update = false, updateData }: PopupProps) {
   const [editionName, setEditionName] = useState(updateData?.edition || "");
   const [publisherId, setPublisherId] = useState(updateData?.publisher || "");
   const [heroIds, setHeroIds] = useState<string[]>(updateData?.heroesIds || []);
 
-  const createEdition = async () => {
-    try {
-      if (!editionName.trim()) {
-        return showToast("error", "Ime edicije je obavezno");
-      }
-      if (!publisherId) {
-        return showToast("error", "Izdavač edicije je obavezan");
-      }
-      if (heroIds.length === 0) {
-        return showToast("error", "Junak edicije je obavezan");
-      }
+  const validate = () => {
+    if (!editionName.trim()) { showToast("error", "Ime edicije je obavezno"); return false; }
+    if (!publisherId) { showToast("error", "Izdavač edicije je obavezan"); return false; }
+    if (heroIds.length === 0) { showToast("error", "Junak edicije je obavezan"); return false; }
+    return true;
+  };
 
-      const editionData = {
+  const createEdition = async () => {
+    if (!validate()) return;
+    try {
+      await axiosPrivate.post("/api/editions/createEdition", {
         name: editionName,
         publisher: publisherId,
         heroes: heroIds,
-      };
-
-      await axiosPrivate.post("/api/editions/createEdition", editionData);
+      });
       showToast("success", "Edicija je uspješno kreirana");
-      setEditionName("");
-      setPublisherId("");
-      setHeroIds([]);
+      setEditionName(""); setPublisherId(""); setHeroIds([]);
       fetchData();
       onClose();
     } catch (err: any) {
-      showToast(
-        "error",
-        err?.response?.data?.message ||
-          "Došlo je do greške prilikom kreiranja edicije.",
-      );
+      showToast("error", err?.response?.data?.message || "Došlo je do greške.");
     }
   };
 
   const updateEdition = async () => {
+    if (!validate()) return;
     try {
-      if (!editionName.trim()) {
-        return showToast("error", "Ime edicije je obavezno");
-      }
-      if (!publisherId) {
-        return showToast("error", "Izdavač edicije je obavezan");
-      }
-      if (heroIds.length === 0) {
-        return showToast("error", "Junak edicije je obavezan");
-      }
-      const editionId = updateData?.editionId;
-      const editionData = {
+      await axiosPrivate.put(`/api/editions/updateEdition/${updateData?.editionId}`, {
         name: editionName,
         publisher: publisherId,
         heroes: heroIds,
-      };
-      await axiosPrivate.put(
-        `/api/editions/updateEdition/${editionId}`,
-        editionData,
-      );
-
+      });
       showToast("success", "Edicija je uspješno izmijenjena");
-      setEditionName("");
-      setPublisherId("");
-      setHeroIds([]);
+      setEditionName(""); setPublisherId(""); setHeroIds([]);
       fetchData();
       onClose();
     } catch (err: any) {
-      showToast(
-        "error",
-        err?.response?.data?.message ||
-          "Došlo je do greške prilikom ažuriranja edicije.",
-      );
+      showToast("error", err?.response?.data?.message || "Došlo je do greške.");
     }
   };
+
   return (
     <Popup
       onClose={onClose}
-      title={update ? "Uredi Ediciju" : "Kreiraj Ediciju"}
-      buttonText={update ? "Ažuriraj" : "Kreiraj"}
-      onConfirm={update ? () => updateEdition() : () => createEdition()}
+      title={update ? "Uredi Ediciju" : "Dodaj Ediciju"}
+      buttonText={update ? "Sačuvaj" : "Kreiraj"}
+      onConfirm={update ? updateEdition : createEdition}
     >
       <div className="px-6 py-6 space-y-5">
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Naziv
-          </label>
+          <label className={labelClass}>Naziv edicije</label>
           <input
             type="text"
             value={editionName}
             onChange={(e) => setEditionName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+            className={inputClass}
             placeholder="Unesite naziv edicije"
           />
         </div>

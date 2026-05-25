@@ -8,6 +8,7 @@ import type { Publisher } from "../../types/Publisher";
 import type { Edition } from "../../types/Edition";
 import type { Comic } from "../../types/Comic";
 import LoadingIndicator from "../core/LoadingComponent";
+import { IoImageOutline } from "react-icons/io5";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -17,6 +18,10 @@ interface PopupProps {
   onRefresh?: () => void;
 }
 
+const inputClass =
+  "w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white transition-all placeholder:text-gray-400 text-gray-900";
+const labelClass = "block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2";
+
 function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
   const isUpdate = !!comic;
   const prevPublisherId = useRef(comic?.edition?.publisher?._id || "");
@@ -25,9 +30,7 @@ function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
   const [publishers, setPublishers] = useState<Publisher[] | null>(null);
   const [editions, setEditions] = useState<Edition[] | null>(null);
   const [heroId, setHeroId] = useState<string>(comic?.hero?._id || "");
-  const [publisherId, setPublisherId] = useState<string>(
-    comic?.edition?.publisher?._id || "",
-  );
+  const [publisherId, setPublisherId] = useState<string>(comic?.edition?.publisher?._id || "");
   const [editionId, setEditionId] = useState<string>(comic?.edition?._id || "");
   const [title, setTitle] = useState(comic?.title || "");
   const [issueNumber, setIssueNumber] = useState(comic?.issueNumber || "");
@@ -56,9 +59,7 @@ function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
 
   const fetchPublishers = async () => {
     try {
-      const response = await axiosPrivate.get(
-        "/api/publishers/getAllPublishers",
-      );
+      const response = await axiosPrivate.get("/api/publishers/getAllPublishers");
       setPublishers(response.data);
     } catch (err: any) {
       showToast("error", err?.response?.data?.message || "Došlo je do greške");
@@ -101,11 +102,9 @@ function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
 
     try {
       if (isUpdate) {
-        await axiosPrivate.put(
-          `/api/comics/updateComic/${comic._id}`,
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } },
-        );
+        await axiosPrivate.put(`/api/comics/updateComic/${comic._id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         showToast("success", "Strip je uspješno ažuriran.");
       } else {
         await axiosPrivate.post("/api/comics/createComic", formData, {
@@ -134,63 +133,67 @@ function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
       onConfirm={handleSubmit}
     >
       {loading ? (
-        <LoadingIndicator />
+        <div className="flex items-center justify-center py-12">
+          <LoadingIndicator />
+        </div>
       ) : (
-        <div className="px-5 py-3 flex flex-col gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Naslov Stripa
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              placeholder="Unesite naslov stripa"
-            />
+        <div className="px-6 py-6 space-y-5">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelClass}>Naslov stripa</label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className={inputClass}
+                placeholder="Unesite naslov"
+              />
+            </div>
+            <div>
+              <label className={labelClass}>Redni broj</label>
+              <input
+                type="text"
+                value={issueNumber}
+                onChange={(e) => setIssueNumber(e.target.value)}
+                className={inputClass}
+                placeholder="npr. 123"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Redni Broj Stripa
-            </label>
-            <input
-              type="text"
-              value={issueNumber}
-              onChange={(e) => setIssueNumber(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              placeholder="Unesite broj"
-            />
-          </div>
+
           <CustomSelect
             options={heroes ?? []}
             value={heroId}
             onChange={setHeroId}
-            label="Izaberite Heroja"
+            label="Junak"
+            placeholder="Odaberite junaka"
           />
           <CustomSelect
             options={publishers ?? []}
             value={publisherId}
             onChange={setPublisherId}
-            label="Izaberite Izdavača"
+            label="Izdavač"
+            placeholder="Odaberite izdavača"
           />
           <CustomSelect
             options={editions ?? []}
             value={editionId}
             onChange={setEditionId}
-            label="Izaberite Ediciju"
+            label="Edicija"
+            placeholder="Odaberite ediciju"
           />
+
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Slika Naslovnice{" "}
-              {isUpdate && (
-                <span className="text-gray-400 font-normal">(opcionalno)</span>
-              )}
+            <label className={labelClass}>
+              Slika naslovnice{" "}
+              {isUpdate && <span className="normal-case font-normal text-gray-400">(opcionalno)</span>}
             </label>
-            <label className="flex items-center gap-3 w-full px-4 py-2 border border-gray-300 rounded-lg cursor-pointer hover:border-green-500 transition-all">
-              <span className="bg-green-500 text-white text-sm px-3 py-1 rounded-md whitespace-nowrap">
-                Odaberi sliku
-              </span>
-              <span className="text-sm text-gray-500 truncate">
+            <label className="flex items-center gap-3 w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50 cursor-pointer hover:border-orange-400 hover:bg-orange-50/30 transition-all group">
+              <div className="flex items-center gap-2 bg-gray-950 group-hover:bg-gray-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">
+                <IoImageOutline size={14} />
+                Odaberi
+              </div>
+              <span className="text-sm text-gray-400 truncate">
                 {coverPicture ? coverPicture.name : "Nije odabran fajl"}
               </span>
               <input
@@ -198,9 +201,7 @@ function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
                 accept="image/*"
                 className="hidden"
                 onChange={(e) => {
-                  if (e.target.files?.[0]) {
-                    setCoverPicture(e.target.files[0]);
-                  }
+                  if (e.target.files?.[0]) setCoverPicture(e.target.files[0]);
                 }}
               />
             </label>
@@ -209,7 +210,7 @@ function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
                 <img
                   src={previewUrl}
                   alt="Preview"
-                  className="max-h-48 rounded-lg border border-gray-300 object-contain"
+                  className="max-h-48 rounded-xl border border-gray-200 object-contain shadow-sm"
                 />
               </div>
             )}
