@@ -23,6 +23,7 @@ import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
 import { store } from "./store/store.ts";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage.tsx";
+import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -103,8 +104,12 @@ const router = createBrowserRouter([
     element: <RegisterPage />,
   },
   {
-    path:"/forgot-password",
-    element:<ForgotPasswordPage/>
+    path: "/forgot-password",
+    element: <ForgotPasswordPage />,
+  },
+  {
+    path: "/reset-password/:token",
+    element: <ResetPasswordPage />,
   }
 ]);
 

@@ -11,6 +11,7 @@ interface CustomSelectProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  disabled?:boolean;
 }
 
 function CustomSelect({
@@ -19,6 +20,7 @@ function CustomSelect({
   value,
   onChange,
   placeholder = "Odaberite opciju",
+  disabled = false
 }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
@@ -42,8 +44,9 @@ function CustomSelect({
       <div className="relative" ref={selectRef}>
         <button
           type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          className="w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white transition-all cursor-pointer hover:border-gray-300 text-left flex justify-between items-center"
+          onClick={() => !disabled && setIsOpen(!isOpen)}
+          disabled={disabled}
+          className={`w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white transition-all text-left flex justify-between items-center ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:border-gray-300"}`}
         >
           <span className={value ? "text-gray-900 font-semibold" : "text-gray-400"}>
             {selectedLabel}

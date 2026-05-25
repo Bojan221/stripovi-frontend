@@ -141,9 +141,9 @@ function ComicsPage() {
         <LoadingIndicator size="lg" placement="fullscreen" />
       ) : (
         <>
-          {popupOpen && <ComicActionPopup onClose={() => setPopupOpen(false)} />}
+          {popupOpen && <ComicActionPopup onClose={() => setPopupOpen(false)} onRefresh={fetchComics} />}
 
-          <ComicAdminPanelTable comics={comics ?? []} onRefresh={fetchComics} />
+          <ComicAdminPanelTable comics={comics ?? []} onRefresh={fetchComics}  />
 
           {totalPages > 1 && (
             <div className="mt-6 flex justify-center">

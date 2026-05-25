@@ -79,7 +79,7 @@ function CreateEditionPopup({ publishers, heroes, onClose, fetchData, update = f
       buttonText={update ? "Sačuvaj" : "Kreiraj"}
       onConfirm={update ? updateEdition : createEdition}
     >
-      <div className="px-6 py-6 space-y-5">
+      <div className="px-6 py-6 space-y-5 min-h-140">
         <div>
           <label className={labelClass}>Naziv edicije</label>
           <input

@@ -22,8 +22,6 @@ const labelClass = "block text-xs font-bold uppercase tracking-widest text-gray-
 
 function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
   const isUpdate = !!comic;
-  const prevPublisherId = useRef(comic?.edition?.publisher?._id || "");
-
   const [heroes, setHeroes] = useState<Hero[] | null>(null);
   const [publishers, setPublishers] = useState<Publisher[] | null>(null);
   const [editions, setEditions] = useState<Edition[] | null>(null);
@@ -44,10 +42,10 @@ function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
     }
   };
 
-  const fetchEditions = async (pubId: string) => {
+  const fetchEditions = async (pubId: string, hId: string) => {
     try {
       const response = await axiosPrivate.get(
-        `/api/editions/getAllEditions?publisher=${pubId}&hero=${heroId}`,
+        `/api/editions/getAllEditions?publisher=${pubId}&hero=${hId}`,
       );
       setEditions(response.data.editions);
     } catch (err: any) {
@@ -69,7 +67,7 @@ function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
       setLoading(true);
       try {
         await Promise.all([fetchHeroes(), fetchPublishers()]);
-        await fetchEditions(publisherId);
+        await fetchEditions(publisherId, heroId);
       } finally {
         setLoading(false);
       }
@@ -77,14 +75,17 @@ function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
     loadData();
   }, []);
 
+  const isInitialMount = useRef(true);
   useEffect(() => {
-    if (prevPublisherId.current === publisherId) return;
-    prevPublisherId.current = publisherId;
-    fetchEditions(publisherId).then(() => setEditionId(""));
-  }, [publisherId]);
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    fetchEditions(publisherId, heroId).then(() => setEditionId(""));
+  }, [publisherId, heroId]);
 
   const handleSubmit = async () => {
-    if (!title.trim() || !issueNumber.trim() || !heroId || !editionId) {
+    if (!title.trim() || !issueNumber || !heroId || !editionId) {
       return showToast("error", "Forma nije popunjena ispravno!");
     }
     if (!isUpdate && !coverPicture) {
@@ -93,7 +94,7 @@ function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
 
     const formData = new FormData();
     formData.append("title", title);
-    formData.append("issueNumber", issueNumber);
+    formData.append("issueNumber", issueNumber.toString());
     formData.append("heroId", heroId);
     formData.append("editionId", editionId);
     if (coverPicture) formData.append("cover", coverPicture);
@@ -179,6 +180,7 @@ function ComicActionPopup({ onClose, comic, onRefresh }: PopupProps) {
             onChange={setEditionId}
             label="Edicija"
             placeholder="Odaberite ediciju"
+            disabled = {!heroId  || !publisherId}
           />
 
           <div>

@@ -1,23 +1,21 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { loginSchema, type LoginData, type LoginErrors } from "../validation/loginSchema";
+import { resetPasswordSchema, type ResetPasswordErrors } from "../validation/resetPasswordSchema";
 import { axiosPublic } from "../api/axiosInstance";
 import { showToast } from "../utils/toast";
 import { ImSpinner9 } from "react-icons/im";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../store/userSlice";
-import { useNavigate } from "react-router-dom";
 
-function LoginPage() {
-  const dispatch = useDispatch();
+function ResetPasswordPage() {
+  const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
-  const [loginData, setLoginData] = useState<LoginData>({ email: "", password: "" });
-  const [errors, setErrors] = useState<LoginErrors>({});
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<ResetPasswordErrors>({});
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleReset = async () => {
     setLoading(true);
-    const result = loginSchema.safeParse(loginData);
+    const result = resetPasswordSchema.safeParse({ password, confirmPassword });
     if (!result.success) {
       setErrors(result.error.flatten().fieldErrors);
       setLoading(false);
@@ -25,12 +23,11 @@ function LoginPage() {
     }
     setErrors({});
     try {
-      const response = await axiosPublic.post("/auth/loginUser", loginData);
-      dispatch(loginUser(response.data));
-      showToast("success", "Uspješno ste se prijavili!");
-      navigate("/");
+      await axiosPublic.post(`/auth/resetPassword/${token}`, { password });
+      showToast("success", "Lozinka je uspješno promijenjena!");
+      setTimeout(() => navigate("/login"), 800);
     } catch (err: any) {
-      showToast("error", err.response.data.message);
+      showToast("error", err.response?.data?.message || "Greška pri resetovanju lozinke");
     } finally {
       setLoading(false);
     }
@@ -56,11 +53,12 @@ function LoginPage() {
                   Sergio Bonelli Editore
                 </span>
               </div>
-              <h1 className="text-[4rem] font-black leading-[0.9] tracking-tight text-white">
-                <span className="block">PRIJAVA.</span>
+              <h1 className="text-[3.5rem] font-black leading-[0.9] tracking-tight text-white">
+                <span className="block">NOVA</span>
+                <span className="block text-orange-500">LOZINKA.</span>
               </h1>
               <p className="mt-8 text-white/35 text-sm leading-relaxed font-medium">
-                Pristupite svojoj kolekciji i pratite omiljene serijale na jednom mjestu.
+                Unesite novu lozinku za vaš nalog i potvrdite je.
               </p>
             </div>
 
@@ -88,9 +86,9 @@ function LoginPage() {
             </div>
 
             <div>
-              <h2 className="text-4xl font-black text-gray-950 tracking-tight">Prijava</h2>
+              <h2 className="text-4xl font-black text-gray-950 tracking-tight">Nova lozinka</h2>
               <p className="text-gray-400 text-sm mt-1.5 font-medium">
-                Pristupite vašoj kolekciji stripova
+                Unesite i potvrdite novu lozinku
               </p>
             </div>
 
@@ -98,27 +96,7 @@ function LoginPage() {
               <div>
                 <div className="flex justify-between items-end mb-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-gray-500">
-                    Email
-                  </label>
-                  {errors?.email && (
-                    <p className="text-xs text-red-500 font-bold">{errors.email[0]}</p>
-                  )}
-                </div>
-                <input
-                  type="text"
-                  name="email"
-                  id="email"
-                  value={loginData.email}
-                  onChange={(e) => setLoginData({ ...loginData, [e.target.name]: e.target.value })}
-                  placeholder="vas@email.com"
-                  className={errors?.email?.length ? inputError : inputNormal}
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between items-end mb-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-gray-500">
-                    Lozinka
+                    Nova lozinka
                   </label>
                   {errors?.password && (
                     <p className="text-xs text-red-500 font-bold">{errors.password[0]}</p>
@@ -126,35 +104,42 @@ function LoginPage() {
                 </div>
                 <input
                   type="password"
-                  name="password"
-                  id="password"
-                  value={loginData.password}
-                  onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-                  onChange={(e) => setLoginData({ ...loginData, [e.target.name]: e.target.value })}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className={errors?.password?.length ? inputError : inputNormal}
                 />
               </div>
+
+              <div>
+                <div className="flex justify-between items-end mb-2">
+                  <label className="text-xs font-bold uppercase tracking-widest text-gray-500">
+                    Potvrda lozinke
+                  </label>
+                  {errors?.confirmPassword && (
+                    <p className="text-xs text-red-500 font-bold">{errors.confirmPassword[0]}</p>
+                  )}
+                </div>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleReset()}
+                  placeholder="••••••••"
+                  className={errors?.confirmPassword?.length ? inputError : inputNormal}
+                />
+              </div>
             </div>
 
-            <div className="flex flex-col gap-3">
-              <button
-                onClick={handleLogin}
-                disabled={loading}
-                className="w-full bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-black text-lg py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-0.5 disabled:opacity-60 disabled:translate-y-0 disabled:shadow-none flex items-center justify-center gap-2 cursor-pointer"
-              >
-                {loading ? (
-                  <><ImSpinner9 className="animate-spin w-5 h-5" />Učitavanje...</>
-                ) : "Prijava"}
-              </button>
-
-              <NavLink
-                to="/forgot-password"
-                className="text-center text-sm text-gray-400 hover:text-orange-500 transition-colors font-medium"
-              >
-                Zaboravljena lozinka?
-              </NavLink>
-            </div>
+            <button
+              onClick={handleReset}
+              disabled={loading}
+              className="w-full bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-black text-lg py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-0.5 disabled:opacity-60 disabled:translate-y-0 disabled:shadow-none flex items-center justify-center gap-2 cursor-pointer"
+            >
+              {loading ? (
+                <><ImSpinner9 className="animate-spin w-5 h-5" />Čuvanje...</>
+              ) : "Sačuvaj lozinku"}
+            </button>
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -167,15 +152,12 @@ function LoginPage() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-2">
-              <p className="text-xs text-gray-400 font-medium text-center">Nemate nalog?</p>
-              <NavLink
-                to="/register"
-                className="w-full bg-gray-950 hover:bg-gray-800 text-white font-black text-lg py-3.5 rounded-xl transition-all duration-200 shadow-lg hover:-translate-y-0.5 active:scale-95 text-center"
-              >
-                Registracija
-              </NavLink>
-            </div>
+            <NavLink
+              to="/login"
+              className="w-full bg-gray-950 hover:bg-gray-800 text-white font-black text-lg py-3.5 rounded-xl transition-all duration-200 shadow-lg hover:-translate-y-0.5 active:scale-95 text-center"
+            >
+              Nazad na prijavu
+            </NavLink>
           </div>
         </div>
       </div>
@@ -183,4 +165,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default ResetPasswordPage;
