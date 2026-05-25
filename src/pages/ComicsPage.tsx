@@ -10,6 +10,7 @@ import PaginationRounded from "../components/core/Pagination";
 import LoadingIndicator from "../components/core/LoadingComponent";
 import ComicCard from "../components/comics/ComicCard";
 import ComicsFilterSection from "../components/comics/ComicsFilterSection";
+import { useQuery } from "@tanstack/react-query";
 
 function ComicsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,49 +21,35 @@ function ComicsPage() {
   const search = searchParams.get("search") || "";
   const perPage = Number(searchParams.get("perPage")) || 12;
 
-  const [comics, setComics] = useState<Comic[]>([]);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalComics, setTotalComics] = useState(0);
-  const [loading, setLoading] = useState(true);
-
-  const [publishers, setPublishers] = useState<Publisher[]>([]);
-  const [heroes, setHeroes] = useState<Hero[]>([]);
-  const [editions, setEditions] = useState<Edition[]>([]);
-
   const [searchInput, setSearchInput] = useState(search);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevPublisher = useRef(publisher);
 
   const activeFiltersCount = [publisher, hero, edition].filter(Boolean).length;
 
-  useEffect(() => {
-    const fetchMeta = async () => {
-      try {
-        const [pubRes, heroRes] = await Promise.all([
-          axiosPrivate.get("/api/publishers/getAllPublishers"),
-          axiosPrivate.get("/api/heroes/getAllHeroes"),
-        ]);
-        setPublishers(pubRes.data);
-        setHeroes(heroRes.data.heroes);
-      } catch {
-        showToast("error", "Greška pri učitavanju filtera");
-      }
-    };
-    fetchMeta();
-  }, []);
+  const { data: metaData, error: metaError } = useQuery({
+    queryKey: ["meta"],
+    queryFn: async () => {
+      const [pubRes, heroRes] = await Promise.all([
+        axiosPrivate.get("/api/publishers/getAllPublishers"),
+        axiosPrivate.get("/api/heroes/getAllHeroes"),
+      ]);
+      return {
+        publishers: pubRes.data as Publisher[],
+        heroes: heroRes.data.heroes as Hero[],
+      };
+    },
+    staleTime: Infinity,
+  });
+
+  const publishers = metaData?.publishers ?? [];
+  const heroes = metaData?.heroes ?? [];
 
   useEffect(() => {
-    const fetchEditions = async () => {
-      try {
-        const res = await axiosPrivate.get(
-          `/api/editions/getAllEditions?publisher=${publisher}&hero=${hero}`,
-        );
-        setEditions(res.data.editions);
-      } catch {
-        showToast("error", "Greška pri učitavanju edicija");
-      }
-    };
+    if (metaError) showToast("error", "Greška pri učitavanju filtera");
+  }, [metaError]);
 
+  useEffect(() => {
     if (prevPublisher.current !== publisher) {
       prevPublisher.current = publisher;
       setSearchParams((prev) => {
@@ -72,31 +59,48 @@ function ComicsPage() {
         return params;
       });
     }
+  }, [publisher]);
 
-    fetchEditions();
-  }, [publisher, hero]);
+  const { data: editionsData, error: editionsError } = useQuery({
+    queryKey: ["editions", publisher, hero],
+    queryFn: async () => {
+      const res = await axiosPrivate.get(
+        `/api/editions/getAllEditions?publisher=${publisher}&hero=${hero}`,
+      );
+      return res.data.editions as Edition[];
+    },
+  });
+
+  const editions = editionsData ?? [];
 
   useEffect(() => {
-    const fetchComics = async () => {
-      setLoading(true);
-      try {
-        const res = await axiosPrivate.get(
-          `/api/comics/getAllComics?page=${currentPage}&publisher=${publisher}&hero=${hero}&edition=${edition}&search=${search}&limit=${perPage}`,
-        );
-        setComics(res.data.comics);
-        setTotalPages(res.data.totalPages);
-        setTotalComics(res.data.total ?? res.data.comics.length);
-      } catch (err: any) {
-        showToast(
-          "error",
-          err?.response?.data?.message || "Došlo je do greške",
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchComics();
-  }, [currentPage, publisher, hero, edition, search, perPage]);
+    if (editionsError) showToast("error", "Greška pri učitavanju edicija");
+  }, [editionsError]);
+
+  const { data: comicsData, isLoading, error: comicsError } = useQuery({
+    queryKey: ["comics", currentPage, publisher, hero, edition, search, perPage],
+    queryFn: async () => {
+      const res = await axiosPrivate.get(
+        `/api/comics/getAllComics?page=${currentPage}&publisher=${publisher}&hero=${hero}&edition=${edition}&search=${search}&limit=${perPage}`,
+      );
+      return {
+        comics: res.data.comics as Comic[],
+        totalPages: res.data.totalPages as number,
+        total: (res.data.total ?? res.data.comics.length) as number,
+      };
+    },
+  });
+
+  const comics = comicsData?.comics ?? [];
+  const totalPages = comicsData?.totalPages ?? 1;
+  const totalComics = comicsData?.total ?? 0;
+
+  useEffect(() => {
+    if (comicsError) {
+      const err = comicsError as any;
+      showToast("error", err?.response?.data?.message || "Došlo je do greške");
+    }
+  }, [comicsError]);
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
@@ -146,7 +150,7 @@ function ComicsPage() {
             <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">
               Svi <span className="text-orange-500">Stripovi</span>
             </h1>
-            {!loading && (
+            {!isLoading && (
               <span className="text-white/30 text-sm font-semibold">
                 {totalComics} stripova
               </span>
@@ -170,7 +174,7 @@ function ComicsPage() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-8">
-        {loading ? (
+        {isLoading ? (
           <LoadingIndicator size="lg" placement="fullscreen" />
         ) : comics.length === 0 ? (
           <div className="text-center py-24">

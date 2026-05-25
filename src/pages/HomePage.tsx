@@ -1,25 +1,28 @@
-import { useEffect, useState } from "react";
 import heroBg from "../assets/images/herosection.png";
 import { axiosPrivate } from "../api/axiosInstance";
 import type { Hero } from "../types/Hero";
 import { IoLibrary } from "react-icons/io5";
 import { FaStar } from "react-icons/fa";
 import { FaSearch } from "react-icons/fa";
-
+import { useQuery } from "@tanstack/react-query";
+import { showToast } from "../utils/toast";
 
 function HomePage() {
-  const [heroes, setHeroes] = useState<Hero[]>([]);
 
-  useEffect(() => {
-    axiosPrivate
-      .get("/api/heroes/getAllHeroes")
-      .then((res) => setHeroes(res.data.heroes ?? []))
-      .catch(() => {});
-  }, []);
+  const {data: heroData, error: errorData} = useQuery({
+    queryKey:["hero"],
+    queryFn: async () => { 
+      const res = await axiosPrivate.get("/api/heroes/getAllHeroes")
+      return res.data.heroes as Hero[]
+    },
+    staleTime: Infinity
+  })
 
-  const tickerItems = heroes.length > 0 ? [...heroes, ...heroes] : [];
+  if(errorData) showToast("error","Greska pri ucitavanju heroja!")
 
-  return (
+  const tickerItems =heroData? heroData.length > 0 ? [...heroData, ...heroData] : [] : [];
+
+  return ( 
     <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Top accent bar */}
       <div className="h-1.5 w-full bg-linear-to-r from-orange-400 via-red-500 to-orange-500" />
