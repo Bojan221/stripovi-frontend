@@ -86,7 +86,7 @@ function ComicsPage() {
       return {
         comics: res.data.comics as Comic[],
         totalPages: res.data.totalPages as number,
-        total: (res.data.total ?? res.data.comics.length) as number,
+        total: (res.data.totalComics ?? res.data.totalComics) as number,
       };
     },
   });
@@ -94,14 +94,13 @@ function ComicsPage() {
   const comics = comicsData?.comics ?? [];
   const totalPages = comicsData?.totalPages ?? 1;
   const totalComics = comicsData?.total ?? 0;
-
   useEffect(() => {
     if (comicsError) {
       const err = comicsError as any;
       showToast("error", err?.response?.data?.message || "Došlo je do greške");
     }
   }, [comicsError]);
-  
+
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
     if (searchTimer.current) clearTimeout(searchTimer.current);
@@ -137,7 +136,7 @@ function ComicsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Page header */}
+
       <div className="bg-gray-950 px-6 py-10">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-3 mb-3">
