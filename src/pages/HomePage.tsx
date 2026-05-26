@@ -24,13 +24,12 @@ function HomePage() {
 
   return ( 
     <div className="min-h-screen bg-white overflow-x-hidden">
-      {/* Top accent bar */}
+
       <div className="h-1.5 w-full bg-linear-to-r from-orange-400 via-red-500 to-orange-500" />
 
-      {/* Hero section */}
       <section className="relative">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-0">
-          {/* Label */}
+
           <div className="flex items-center gap-3 mb-10">
             <div className="w-10 h-0.5 bg-orange-500" />
             <span className="text-orange-500 font-bold text-xs uppercase tracking-[0.25em]">
@@ -38,9 +37,8 @@ function HomePage() {
             </span>
           </div>
 
-          {/* Main grid */}
           <div className="flex flex-col lg:flex-row justify-between items-start gap-12">
-            {/* Left: headline + CTA */}
+
             <div className="flex-1">
               <h1 className="text-[clamp(2.8rem,6vw,6rem)] font-black leading-[0.9] tracking-tight text-gray-950">
                 <span className="block">KOLEKCIJA</span>
@@ -53,16 +51,15 @@ function HomePage() {
               </p>
 
               <div className="flex flex-wrap items-center gap-4 mt-10">
-                <button className="bg-orange-500 hover:bg-orange-600 active:scale-95 text-white px-8 py-4 cursor-pointer font-bold text-lg rounded-xl transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-0.5">
+                <button className="bg-orange-500 hover:bg-orange-600 active:scale-95 text-white px-5 py-2.5 text-sm sm:px-8 sm:py-4 sm:text-lg cursor-pointer font-bold rounded-xl transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-0.5">
                   Istrazi Stripove
                 </button>
-                <button className="text-gray-900 font-bold text-lg px-8 py-4 border-2 border-gray-900 cursor-pointer rounded-xl hover:bg-gray-900 hover:text-white active:scale-95 transition-all duration-200">
+                <button className="text-gray-900 font-bold text-sm sm:text-lg px-5 py-2.5 sm:px-8 sm:py-4 border-2 border-gray-900 cursor-pointer rounded-xl hover:bg-gray-900 hover:text-white active:scale-95 transition-all duration-200">
                   Moja Kolekcija
                 </button>
               </div>
             </div>
 
-            {/* Right: big stats */}
             <div className="hidden lg:flex flex-col text-right shrink-0">
               {[
                 { num: "500+", label: "Stripova" },
@@ -85,19 +82,17 @@ function HomePage() {
           </div>
         </div>
 
-        {/* Characters panoramic */}
         <div className="relative mt-10">
-          <div className="absolute top-0 left-0 right-0 h-24 bg-linear-to-b from-white via-white/60 to-transparent z-10 pointer-events-none" />
+          <div className="absolute top-0 left-0 right-0 h-8 sm:h-24 bg-linear-to-b from-white via-white/60 to-transparent z-10 pointer-events-none" />
           <img
             src={heroBg}
             alt="Bonelli Heroes"
-            className="w-[90%] object-cover select-none mx-auto"
+            className="w-full md:w-[90%] object-cover select-none mx-auto"
             draggable={false}
           />
           <div className="absolute bottom-0 left-0 right-0 h-16 bg-linear-to-t from-gray-950 to-transparent pointer-events-none" />
         </div>
 
-        {/* Scrolling ticker band */}
         <div className="bg-gray-950 py-5 overflow-hidden">
           {tickerItems.length > 0 ? (
             <div
@@ -123,7 +118,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Features section */}
       <section className="bg-gray-50 py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
@@ -171,7 +165,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Bottom CTA strip */}
       <section className="bg-orange-500 py-14 px-6 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           {Array.from({ length: 8 }).map((_, i) => (

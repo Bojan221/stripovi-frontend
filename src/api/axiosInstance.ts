@@ -56,7 +56,7 @@ axiosPrivate.interceptors.response.use(
       } catch (err) {
         store.dispatch(logoutUser());
         showToast("error", "Sesija je istekla. Molim vas prijavite se ponovo.");
-        // Redirect to login page
+    
         window.location.href = "/login";
         return Promise.reject(err);
       }

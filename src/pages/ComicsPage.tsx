@@ -68,7 +68,7 @@ function ComicsPage() {
         `/api/editions/getAllEditions?publisher=${publisher}&hero=${hero}`,
       );
       return res.data.editions as Edition[];
-    },
+    }
   });
 
   const editions = editionsData ?? [];
@@ -101,7 +101,7 @@ function ComicsPage() {
       showToast("error", err?.response?.data?.message || "Došlo je do greške");
     }
   }, [comicsError]);
-
+  
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
     if (searchTimer.current) clearTimeout(searchTimer.current);
@@ -194,7 +194,7 @@ function ComicsPage() {
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
               {comics.map((comic) => (
-                <ComicCard key={comic._id} comic={comic} />
+                <ComicCard key={comic._id} comic={comic} showActionsButton={true}/>
               ))}
             </div>
 

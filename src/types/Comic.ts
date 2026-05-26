@@ -11,4 +11,5 @@ export interface Comic {
   createdBy: User;
   hero: Hero;
   edition: Edition;
+  isOwned: boolean;
 }
