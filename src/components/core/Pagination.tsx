@@ -11,7 +11,7 @@ export default function PaginationRounded({
   const currentPage = Number(searchParams.get("page")) || 1;
 
   const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     value: number,
   ) => {
     setSearchParams((params) => {
