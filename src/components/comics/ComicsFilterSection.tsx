@@ -37,10 +37,9 @@ function ComicsFilterSection({
 
   return (
     <>
-      {/* Sticky filter bar */}
       <div className="bg-white border-b border-gray-100 sticky top-16 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-3 flex items-center gap-3">
-          {/* Search — always visible */}
+
           <div className="relative flex-1 min-w-0">
             <svg
               className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
@@ -101,7 +100,6 @@ function ComicsFilterSection({
             )}
           </div>
 
-          {/* Mobile filter button */}
           <button
             onClick={() => setFilterSheetOpen(true)}
             className="lg:hidden relative flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 hover:border-orange-400 hover:text-orange-500 transition-colors cursor-pointer shrink-0"
@@ -129,7 +127,6 @@ function ComicsFilterSection({
         </div>
       </div>
 
-      {/* Mobile overlay */}
       <div
         className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 lg:hidden ${
           filterSheetOpen ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -137,18 +134,15 @@ function ComicsFilterSection({
         onClick={() => setFilterSheetOpen(false)}
       />
 
-      {/* Mobile bottom sheet */}
       <div
         className={`fixed bottom-0 left-0 right-0 h-1/2 bg-white rounded-t-2xl z-50 flex flex-col transform transition-transform duration-300 ease-out lg:hidden ${
           filterSheetOpen ? "translate-y-0" : "translate-y-full"
         }`}
       >
-        {/* Drag handle */}
         <div className="flex justify-center pt-3 pb-1 shrink-0">
           <div className="w-10 h-1 bg-gray-200 rounded-full" />
         </div>
 
-        {/* Sheet header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 shrink-0">
           <span className="font-black text-gray-950 text-lg">Filteri</span>
           <button
@@ -171,7 +165,6 @@ function ComicsFilterSection({
           </button>
         </div>
 
-        {/* Sheet content */}
         <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-4">
           <div>
             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
@@ -213,7 +206,6 @@ function ComicsFilterSection({
           </div>
         </div>
 
-        {/* Sheet footer */}
         {hasActiveFilters && (
           <div className="px-5 pb-5 pt-3 border-t border-gray-100 shrink-0">
             <button

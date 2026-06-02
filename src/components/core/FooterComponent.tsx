@@ -1,4 +1,9 @@
 import { NavLink } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { axiosPrivate } from "../../api/axiosInstance";
+import type { Hero } from "../../types/Hero";
+import { showToast } from "../../utils/toast";
+import { getYear } from "date-fns";
 
 const navLinks = [
   { label: "Početna", path: "/" },
@@ -9,19 +14,26 @@ const navLinks = [
   { label: "Admin Panel", path: "/admin" },
 ];
 
-const heroes = ["Zagor", "Dylan Dog", "Tex", "Martin Mystère", "Mister No", "Dampyr"];
-
 function FooterComponent() {
+  const { data: heroData, error: errorData } = useQuery({
+    queryKey: ["hero"],
+    queryFn: async () => {
+      const res = await axiosPrivate.get("/api/heroes/getAllHeroes");
+      return res.data.heroes as Hero[];
+    },
+    staleTime: Infinity,
+  });
+  
+  if (errorData) showToast("error", "Greska pri ucitavanju heroja!");
   return (
     <footer className="bg-gray-950 border-t border-white/5">
-      {/* Main footer grid */}
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-14 grid grid-cols-1 md:grid-cols-3 gap-12">
-
-        {/* Brand column */}
         <div className="flex flex-col gap-5">
-          <NavLink to="/" className="flex items-center gap-2 w-fit group">
+          <NavLink to="/" onClick={()=> window.scrollTo({ top: 0, behavior: "smooth" })} className="flex items-center gap-2 w-fit group">
             <div className="w-7 h-7 bg-orange-500 rounded flex items-center justify-center group-hover:bg-orange-400 transition-colors">
-              <span className="text-white font-black text-xs leading-none">S</span>
+              <span className="text-white font-black text-xs leading-none">
+                S
+              </span>
             </div>
             <span className="text-white font-black text-lg tracking-tight">
               STRIP<span className="text-orange-500">OVI</span>
@@ -39,7 +51,6 @@ function FooterComponent() {
           </div>
         </div>
 
-        {/* Navigation column */}
         <div>
           <p className="text-white/30 text-xs font-bold uppercase tracking-[0.2em] mb-5">
             Navigacija
@@ -49,9 +60,14 @@ function FooterComponent() {
               <li key={item.path}>
                 <NavLink
                   to={item.path}
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
                   className={({ isActive }) =>
                     `text-sm font-semibold transition-colors duration-150 ${
-                      isActive ? "text-orange-400" : "text-white/50 hover:text-white"
+                      isActive
+                        ? "text-orange-400"
+                        : "text-white/50 hover:text-white"
                     }`
                   }
                 >
@@ -62,28 +78,32 @@ function FooterComponent() {
           </ul>
         </div>
 
-        {/* Heroes column */}
         <div>
           <p className="text-white/30 text-xs font-bold uppercase tracking-[0.2em] mb-5">
             Heroji
           </p>
           <ul className="flex flex-col gap-3">
-            {heroes.map((hero) => (
-              <li key={hero}>
-                <span className="text-sm font-semibold text-white/50 hover:text-orange-400 transition-colors cursor-pointer">
-                  {hero}
-                </span>
+            {heroData?.map((hero) => (
+              <li key={hero._id}>
+                <NavLink
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
+                  to={`/comics?hero=${hero._id}`}
+                  className="text-sm font-semibold text-white/50 hover:text-orange-400 transition-colors cursor-pointer"
+                >
+                  {hero.name}
+                </NavLink>
               </li>
             ))}
           </ul>
         </div>
       </div>
 
-      {/* Bottom bar */}
       <div className="border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-white/25 text-xs">
-            © {new Date().getFullYear()} Stripovi. Sva prava zadržana.
+            © {getYear(new Date())} Stripovi. Sva prava zadržana.
           </p>
           <div className="flex items-center gap-1">
             <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />

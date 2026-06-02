@@ -44,8 +44,8 @@ function HeaderComponent() {
     <>
       <header className="w-full bg-gray-950 sticky top-0 z-40 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-16">
-          {/* Logo */}
-          <NavLink to="/" className="flex items-center gap-2 group shrink-0">
+
+          <NavLink to="/" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="flex items-center gap-2 group shrink-0">
             <div className="w-7 h-7 bg-orange-500 rounded flex items-center justify-center group-hover:bg-orange-400 transition-colors">
               <span className="text-white font-black text-xs leading-none">
                 S
@@ -56,12 +56,12 @@ function HeaderComponent() {
             </span>
           </NavLink>
 
-          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
+                onClick={()=> window.scrollTo({top:0, behavior:"smooth"})}
                 className={({ isActive }) =>
                   `relative px-4 py-2 text-sm font-semibold transition-colors duration-150 rounded-lg ${
                     isActive
@@ -82,9 +82,7 @@ function HeaderComponent() {
             ))}
           </nav>
 
-          {/* Right: avatar + hamburger */}
           <div className="flex items-center gap-3 ">
-            {/* Desktop avatar */}
             <div className="relative hidden md:block">
               <button
                 onClick={() => setShowOptions(!showOptions)}
@@ -150,7 +148,6 @@ function HeaderComponent() {
               )}
             </div>
 
-            {/* Mobile hamburger */}
             <button
               onClick={() => setShowMobileMenu(true)}
               className="md:hidden text-white/70 hover:text-white transition-colors p-1"
@@ -161,7 +158,7 @@ function HeaderComponent() {
         </div>
       </header>
 
-      {/* Mobile overlay */}
+    
       <div
         className={`fixed inset-0 bg-black/70 backdrop-blur-sm z-50 transition-opacity duration-300 md:hidden ${
           showMobileMenu ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -169,13 +166,11 @@ function HeaderComponent() {
         onClick={() => setShowMobileMenu(false)}
       />
 
-      {/* Mobile drawer */}
       <div
         className={`fixed right-0 top-0 bottom-0 w-72 bg-gray-950 border-l border-white/10 z-50 flex flex-col transform transition-transform duration-300 ease-in-out md:hidden ${
           showMobileMenu ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Drawer header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
           <span className="text-white font-black tracking-tight">
             STRIP<span className="text-orange-500">OVI</span>
@@ -188,7 +183,6 @@ function HeaderComponent() {
           </button>
         </div>
 
-        {/* User info */}
         <button
           className="flex items-center gap-3 px-5 py-4 border-b border-white/10 hover:bg-white/5 transition-colors text-left"
           onClick={() => {
@@ -237,7 +231,6 @@ function HeaderComponent() {
           ))}
         </nav>
 
-        {/* Logout */}
         <div className="px-3 pb-6">
           <button
             onClick={() => {

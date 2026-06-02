@@ -12,4 +12,13 @@ export interface Comic {
   hero: Hero;
   edition: Edition;
   isOwned: boolean;
+  isFavorite:boolean;
+}
+
+export interface FavoriteComic {
+  _id:string;
+  comic: Comic;
+  user: string;
+  createdAt: string;
+  udatedAt: string;
 }

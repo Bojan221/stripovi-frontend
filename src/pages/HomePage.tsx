@@ -6,7 +6,7 @@ import { FaStar } from "react-icons/fa";
 import { FaSearch } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { showToast } from "../utils/toast";
-
+import { NavLink } from "react-router-dom";
 function HomePage() {
 
   const {data: heroData, error: errorData} = useQuery({
@@ -51,12 +51,12 @@ function HomePage() {
               </p>
 
               <div className="flex flex-wrap items-center gap-4 mt-10">
-                <button className="bg-orange-500 hover:bg-orange-600 active:scale-95 text-white px-5 py-2.5 text-sm sm:px-8 sm:py-4 sm:text-lg cursor-pointer font-bold rounded-xl transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-0.5">
+                <NavLink to={'/comics'} onClick={()=> window.scrollTo({top:0, behavior:"smooth"})} className="bg-orange-500 hover:bg-orange-600 active:scale-95 text-white px-5 py-2.5 text-sm sm:px-8 sm:py-4 sm:text-lg cursor-pointer font-bold rounded-xl transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-0.5">
                   Istrazi Stripove
-                </button>
-                <button className="text-gray-900 font-bold text-sm sm:text-lg px-5 py-2.5 sm:px-8 sm:py-4 border-2 border-gray-900 cursor-pointer rounded-xl hover:bg-gray-900 hover:text-white active:scale-95 transition-all duration-200">
+                </NavLink>
+                <NavLink to={'/my-collection'} onClick={()=> window.scrollTo({top:0, behavior:"smooth"})} className="text-gray-900 font-bold text-sm sm:text-lg px-5 py-2.5 sm:px-8 sm:py-4 border-2 border-gray-900 cursor-pointer rounded-xl hover:bg-gray-900 hover:text-white active:scale-95 transition-all duration-200">
                   Moja Kolekcija
-                </button>
+                </NavLink>
               </div>
             </div>
 
@@ -100,12 +100,12 @@ function HomePage() {
               style={{ animation: "ticker-ltr 25s linear infinite" }}
             >
               {tickerItems.map((hero, i) => (
-                <span
+                <NavLink onClick={()=> window.scrollTo({top:0, behavior:"smooth"})} to={`/comics?hero=${hero._id}`}
                   key={`${hero._id}-${i}`}
                   className="text-white/40 hover:text-orange-400 transition-colors text-xs font-bold uppercase tracking-[0.2em] cursor-pointer px-6 shrink-0"
                 >
                   {hero.name}
-                </span>
+                </NavLink>
               ))}
             </div>
           ) : (
@@ -138,19 +138,24 @@ function HomePage() {
                 icon: <IoLibrary color="red"/>,
                 title: "Biblioteka",
                 desc: "Pregledaj kompletnu kolekciju Bonelli stripova sortirano po seriji, heroju ili ediciji.",
+                path:"/comics"
               },
               {
                 icon: <FaStar color="yellow"/>,
                 title: "Kolekcija",
                 desc: "Dodaj stripove u svoju osobnu kolekciju i prati koje primjerke posjedujes.",
+                path: "my-collection"
               },
               {
                 icon: <FaSearch />,
                 title: "Pretraga",
                 desc: "Pronadji bilo koji strip po naslovu, heroju, izdavacu ili broju izdanja.",
+                path:"/comics"
               },
             ].map((f) => (
-              <div
+              <NavLink
+              to={f.path}
+              onClick={()=> window.scrollTo({top:0, behavior:"smooth"})}
                 key={f.title}
                 className="bg-white rounded-2xl p-8 border border-gray-100 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/5 transition-all duration-300 hover:-translate-y-1 group"
               >
@@ -159,7 +164,7 @@ function HomePage() {
                   {f.title}
                 </h3>
                 <p className="text-gray-500 leading-relaxed">{f.desc}</p>
-              </div>
+              </NavLink>
             ))}
           </div>
         </div>
@@ -187,9 +192,9 @@ function HomePage() {
             <br />
             svoju kolekciju.
           </h2>
-          <button className="bg-white text-orange-500 hover:bg-gray-100 active:scale-95 font-black text-lg px-10 py-4 rounded-xl transition-all duration-200 shadow-xl">
+          <NavLink to={'/my-collection'} onClick={()=> window.scrollTo({top:0, behavior:"smooth"})} className="bg-white text-orange-500 hover:bg-gray-100 active:scale-95 font-black text-lg px-10 py-4 rounded-xl transition-all duration-200 shadow-xl mt-4">
             Kreni Odmah
-          </button>
+          </NavLink>
         </div>
       </section>
     </div>
